@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { View, Text, StatusBar } from "react-native";
 import styled from "styled-components/native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { useNavigation } from '@react-navigation/native';
 
 
 import NeuMorph from "./NeuMorph";
@@ -10,22 +11,27 @@ import { GlobalStyles } from "../screens/global/styles";
 const black = "#000";
 const { currentHeight } = StatusBar;
 
-function HeaderHome({ navigation } : any) {
+const navigation = useNavigation();
+
+function HeaderHome() {
+
+    const handleNavigation = () => {
+        console.log(navigation.canGoBack());
+    }
+
     return (
         <MarginSpace>
             <TopContainer>
-                <TouchableWithoutFeedback onPress={navigation}>
-                    <NeuMorph size={48}>
-                    </NeuMorph>
-                </TouchableWithoutFeedback>
-                
+                <NeuMorph size={48} handlePress={handleNavigation}>
+
+                </NeuMorph>
 
                 <View>
                     <Text style={{...GlobalStyles.NeonText}}>PLAYING NOW</Text>
                 </View>
-               
-                <NeuMorph size={48}>
-                    
+
+                <NeuMorph size={48} handlePress={handleNavigation}>
+
                 </NeuMorph>
             </TopContainer>
         </MarginSpace>
@@ -43,4 +49,4 @@ const TopContainer = styled.View`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-`
+`;

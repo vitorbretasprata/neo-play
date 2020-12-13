@@ -6,7 +6,7 @@ import { useStorageMusic } from "../hooks/useStorageMusic";
 
 export default function List() {
 
-    const { state, dispatch } = useMusic();
+    const { state } = useMusic();
     const { storageState, storageDispatch } = useStorageMusic();
 
     return (

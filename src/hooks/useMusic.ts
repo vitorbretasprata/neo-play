@@ -1,8 +1,11 @@
 import { useState, useReducer, useCallback, DispatchWithoutAction, useEffect } from "react";
 import constants from "../constants/index";
 
+import * as MediaLibrary from "expo-media-library";
+import TrackPlayer from 'react-native-track-player';
 interface IMusicTrack {
     shouldPlay: boolean,
+    isTrackInit: boolean,
     rate: number,
     shouldCorrectPitch: boolean,
     volume: number,
@@ -22,6 +25,7 @@ interface IReducer {
 
 const initState = {
     shouldPlay: false,
+    isTrackInit: false,
     rate: 1.0,
     shouldCorrectPitch: true,
     volume: 1.0,
@@ -29,7 +33,7 @@ const initState = {
     isPlaying: false
 }
 
-const { UPDATE_PLAYING, UPDATE_BUFFERING } = constants;
+const { UPDATE_PLAYING, UPDATE_BUFFERING, SET_INIT } = constants;
 
 const reducer = (state : IMusicTrack, action : IAction) => {
 
@@ -50,6 +54,43 @@ const reducer = (state : IMusicTrack, action : IAction) => {
     }   
 }
 
+const trackPlayerInit = async () => {
+    try {
+        await TrackPlayer.setupPlayer();
+
+        const songs : MediaLibrary.PagedInfo<MediaLibrary.Asset> = await _getMusics();
+
+        const musicsInfo = songs.assets.map(song => {
+            return {
+                id: song.id,
+                duration: song.duration,
+                url: song.uri,
+                title: song.filename,
+                album: 'My Album',
+                artist: 'Vitor Prata',
+            }
+        })
+
+        await TrackPlayer.add(musicsInfo);
+
+        return true;
+
+    } catch (error) {
+        console.log(error)
+    }
+};
+
+const _getMusics = async () => {
+    const initStatus = {
+        first: 1500,
+        mediaType: MediaLibrary.MediaType.audio
+    }
+
+    const media = await MediaLibrary.getAssetsAsync(initStatus);
+
+    return media;
+}
+
 
 export const useMusic = () => {
 
@@ -65,8 +106,35 @@ export const useMusic = () => {
     }
 
     useEffect(() => {
-        
+        const initTrack = async () => {
+            const init = await trackPlayerInit();
+
+            dispatch({
+                type: SET_INIT,
+                payload: { isTrackInit: init }
+            });
+        }
+
+        initTrack();
     }, []);
 
-    return { state, dispatch, index, rewind, fastfoward };
+    useEffect(() => {
+        if(state.isPlaying) 
+            TrackPlayer.play();
+        else
+            TrackPlayer.pause();
+    }, [state.isPlaying]);
+    
+
+    const HandlePlaySong = useCallback(
+        () => {
+            dispatch({
+                type: UPDATE_PLAYING,
+                payload: { isPlaying: !state.isPlaying }
+            });
+        },
+        [dispatch, state],
+    );
+
+    return { state, index, rewind, fastfoward, HandlePlaySong };
 }

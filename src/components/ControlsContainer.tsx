@@ -1,42 +1,38 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from "styled-components/native";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import NeuMorph from "./NeuMorph";
 import { GestureResponderEvent } from 'react-native';
+import Entypo from "react-native-vector-icons/Entypo";
 
 interface IControls {
     isPlaying: boolean,
+    disabled: boolean,
     HandlePlay: (Event : GestureResponderEvent) => void,
     HandleFastFoward: (Event : GestureResponderEvent) => void,
     HandleRewind: (Event : GestureResponderEvent) => void 
 }
 
-function Controls({ HandlePlay, HandleRewind, HandleFastFoward, isPlaying } : IControls) {
+function Controls({ HandlePlay, HandleRewind, HandleFastFoward, isPlaying, disabled } : IControls) {
 
     console.log("Controls");
 
     return (
         <ControlsContainer>
             <AlignContainer>
-                <TouchableWithoutFeedback onPress={HandleRewind}>
-                    <NeuMorph size={40}>
-                    </NeuMorph>
-                </TouchableWithoutFeedback>
+                <NeuMorph size={40} handlePress={HandleRewind}>
+                    
+                </NeuMorph>
 
-                <TouchableWithoutFeedback onPress={HandlePlay}>
-                    <NeuMorph size={60}>
-                        
-                    </NeuMorph>
-                </TouchableWithoutFeedback>
-                
-                <TouchableWithoutFeedback onPress={HandleFastFoward}>
-                    <NeuMorph size={40}>
-                    </NeuMorph>
-                </TouchableWithoutFeedback>
+                <NeuMorph size={60} handlePress={HandlePlay}>
+                    <Entypo name="controller-play" size={24} color="#eee" />
+                </NeuMorph>
 
+                <NeuMorph size={40} handlePress={HandleFastFoward}>
+                    
+                </NeuMorph>
             </AlignContainer>
-        </ControlsContainer>        
+        </ControlsContainer>
     );
 }
 
