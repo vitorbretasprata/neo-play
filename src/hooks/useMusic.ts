@@ -4,6 +4,8 @@ import constants from "../constants/index";
 import * as MediaLibrary from "expo-media-library";
 import TrackPlayer from 'react-native-track-player';
 
+import { useTrackPlayerProgress } from 'react-native-track-player/lib/hooks';
+
 interface IMusicTrack {
     shouldPlay: boolean,
     isTrackInit: boolean,
