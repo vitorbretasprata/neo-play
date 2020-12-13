@@ -8,12 +8,11 @@ import { useNavigation } from '@react-navigation/native';
 import NeuMorph from "./NeuMorph";
 import { GlobalStyles } from "../screens/global/styles";
 
-const black = "#000";
 const { currentHeight } = StatusBar;
 
-const navigation = useNavigation();
-
 function HeaderHome() {
+
+    const navigation = useNavigation();
 
     const handleNavigation = () => {
         console.log(navigation.canGoBack());

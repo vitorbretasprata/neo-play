@@ -3,6 +3,7 @@ import constants from "../constants/index";
 
 import * as MediaLibrary from "expo-media-library";
 import TrackPlayer from 'react-native-track-player';
+
 interface IMusicTrack {
     shouldPlay: boolean,
     isTrackInit: boolean,
@@ -10,7 +11,8 @@ interface IMusicTrack {
     shouldCorrectPitch: boolean,
     volume: number,
     isMuted: boolean,
-    isPlaying: boolean
+    isPlaying: boolean,
+    isSeeking: boolean
 }
 
 interface IAction {
@@ -30,10 +32,11 @@ const initState = {
     shouldCorrectPitch: true,
     volume: 1.0,
     isMuted: false,
-    isPlaying: false
+    isPlaying: false,
+    isSeeking: false
 }
 
-const { UPDATE_PLAYING, UPDATE_BUFFERING, SET_INIT } = constants;
+const { UPDATE_PLAYING, UPDATE_BUFFERING, SET_INIT, SET_SEEKING } = constants;
 
 const reducer = (state : IMusicTrack, action : IAction) => {
 
@@ -48,6 +51,18 @@ const reducer = (state : IMusicTrack, action : IAction) => {
             return {
                 ...state,
                 isBuffering: action.payload.isBuffering
+            }
+
+        case SET_INIT: 
+            return {
+                ...state,
+                isTrackInit: action.payload.isTrackInit
+            }
+
+        case SET_SEEKING: 
+            return {
+                ...state,
+                isSeeking: action.payload.isSeeking
             }
         default: 
             return state;
@@ -71,7 +86,16 @@ const trackPlayerInit = async () => {
             }
         })
 
-        await TrackPlayer.add(musicsInfo);
+        await TrackPlayer.add({
+            id: '1',
+            url:
+                'https://audio-previews.elements.envatousercontent.com/files/103682271/preview.mp3',
+            type: 'default',
+            title: 'My Title',
+            album: 'My Album',
+            artist: 'Rohan Bhatia',
+            artwork: 'https://picsum.photos/100',
+        });
 
         return true;
 
@@ -96,6 +120,10 @@ export const useMusic = () => {
 
     const [state, dispatch] = useReducer(reducer, initState);
     const [index, setIndex] = useState(0);
+    const [sliderValue, setSliderValue] = useState(0);
+
+    const { position, duration } = useTrackPlayerProgress(250);
+
 
     const rewind = () => {
         setIndex((curState) => curState + 1);
@@ -104,6 +132,12 @@ export const useMusic = () => {
     const fastfoward = () => {
         setIndex((curState) => curState - 1);
     }
+
+    useEffect(() => {
+        if(state.isSeeking && position && duration) {
+            setSliderValue(position / duration);
+        }
+    }, [position, duration]);
 
     useEffect(() => {
         const initTrack = async () => {
@@ -126,6 +160,22 @@ export const useMusic = () => {
     }, [state.isPlaying]);
     
 
+    const slidingStarted = () => {
+        dispatch({
+            type: SET_SEEKING,
+            payload: { isSeeking: true }
+        });
+    };
+
+    const slidingCompleted = async (value : number) => {
+        await TrackPlayer.seekTo(value * duration);
+        setSliderValue(value);
+        dispatch({
+            type: SET_SEEKING,
+            payload: { isSeeking: false }
+        });
+    };
+
     const HandlePlaySong = useCallback(
         () => {
             dispatch({
@@ -136,5 +186,5 @@ export const useMusic = () => {
         [dispatch, state],
     );
 
-    return { state, index, rewind, fastfoward, HandlePlaySong };
+    return { state, index, rewind, fastfoward, HandlePlaySong, slidingStarted, slidingCompleted, sliderValue };
 }

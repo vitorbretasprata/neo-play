@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import styled from "styled-components/native";
 
 import NeuMorph from "./NeuMorph";
@@ -36,7 +36,7 @@ function Controls({ HandlePlay, HandleRewind, HandleFastFoward, isPlaying, disab
     );
 }
 
-export default Controls;
+export default memo(Controls);
 
 const ControlsContainer = styled.View`
     margin: 0 64px;

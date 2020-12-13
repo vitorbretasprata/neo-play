@@ -13,7 +13,16 @@ const { UPDATE_PLAYING, UPDATE_BUFFERING } = constants;
 
 export default function Home() {
 
-    const { state, fastfoward, rewind, index, HandlePlaySong } = useMusic();
+    const { 
+      state, 
+      fastfoward, 
+      rewind, 
+      index, 
+      HandlePlaySong, 
+      slidingStarted, 
+      slidingCompleted, 
+      sliderValue 
+    } = useMusic();
 
     console.log("---------------------------//----------------------");
 
@@ -25,7 +34,11 @@ export default function Home() {
       >
           <HeaderHome />
           <ArtContainer />
-          <Track />
+          <Track
+            slidingStarted={slidingStarted}
+            slidingCompleted={slidingCompleted}
+            sliderValue={sliderValue}
+          />
           <Controls
              HandlePlay={HandlePlayTrack}
              isPlaying={state.isPlaying}
