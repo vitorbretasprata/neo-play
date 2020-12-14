@@ -15,13 +15,13 @@ function HeaderHome() {
     const navigation = useNavigation();
 
     const handleNavigation = () => {
-        console.log(navigation.canGoBack());
+        
     }
 
     return (
         <MarginSpace>
             <TopContainer>
-                <NeuMorph size={48} handlePress={handleNavigation}>
+                <NeuMorph size={48} handlePress={handleNavigation} bgColor="#626262">
 
                 </NeuMorph>
 
@@ -29,7 +29,7 @@ function HeaderHome() {
                     <Text style={{...GlobalStyles.NeonText}}>PLAYING NOW</Text>
                 </View>
 
-                <NeuMorph size={48} handlePress={handleNavigation}>
+                <NeuMorph size={48} handlePress={handleNavigation} bgColor="#626262">
 
                 </NeuMorph>
             </TopContainer>

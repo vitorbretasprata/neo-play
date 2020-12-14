@@ -6,11 +6,11 @@ import { Neomorph } from "react-native-neomorph-shadows";
 type INeuMorph = {
     children: ReactNode,
     size?: number,
-    style?: StyleProp<object>,
+    bgColor?: string,
     handlePress: Function
 }
 
-const NeuMorph : React.FC<INeuMorph> = ({ children, size, style, handlePress }) => {
+const NeuMorph : React.FC<INeuMorph> = ({ children, size, bgColor, handlePress }) => {
 
     const [press, setPress] = useState(false);
 
@@ -34,6 +34,7 @@ const NeuMorph : React.FC<INeuMorph> = ({ children, size, style, handlePress }) 
                 ...styles.neoMorph, 
                 borderRadius: borderRadiusStyle,
                 width: size || 40,
+                backgroundColor: bgColor || '#707070',
                 height: size || 40
             }}
         >
@@ -47,7 +48,6 @@ export default memo(NeuMorph);
 const styles = StyleSheet.create({
     neoMorph: {
         shadowRadius: 10,
-        backgroundColor: '#707070',
         justifyContent: 'center',
         alignItems: 'center'
     }

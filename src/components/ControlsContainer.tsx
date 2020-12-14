@@ -8,19 +8,18 @@ import Entypo from "react-native-vector-icons/Entypo";
 interface IControls {
     isPlaying: boolean,
     disabled: boolean,
-    HandlePlay: (Event : GestureResponderEvent) => void,
-    HandleFastFoward: (Event : GestureResponderEvent) => void,
-    HandleRewind: (Event : GestureResponderEvent) => void 
+    HandlePlay: (Event : GestureResponderEvent) => void
+    
 }
 
-function Controls({ HandlePlay, HandleRewind, HandleFastFoward, isPlaying, disabled } : IControls) {
+function Controls({ HandlePlay, isPlaying, disabled } : IControls) {
 
     console.log("Controls");
 
     return (
         <ControlsContainer>
             <AlignContainer>
-                <NeuMorph size={40} handlePress={HandleRewind}>
+                <NeuMorph size={40} handlePress={() => {}}>
                     
                 </NeuMorph>
 
@@ -28,7 +27,7 @@ function Controls({ HandlePlay, HandleRewind, HandleFastFoward, isPlaying, disab
                     <Entypo name="controller-play" size={24} color="#eee" />
                 </NeuMorph>
 
-                <NeuMorph size={40} handlePress={HandleFastFoward}>
+                <NeuMorph size={40} handlePress={() => {}}>
                     
                 </NeuMorph>
             </AlignContainer>

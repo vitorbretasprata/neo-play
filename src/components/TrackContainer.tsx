@@ -11,7 +11,7 @@ interface ITrack {
 
 function Track({ slidingStarted, slidingCompleted, sliderValue } : ITrack) {
 
-    console.log("Track");
+    console.log("Track", sliderValue);
 
     return (
         <TrackContainer>

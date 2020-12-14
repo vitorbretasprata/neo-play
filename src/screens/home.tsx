@@ -1,5 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
-import { View } from "react-native";
+import React from 'react';
 
 import HeaderHome from "../components/HeaderHome";
 import ArtContainer from "../components/ArtContainer";
@@ -7,11 +6,7 @@ import Track from "../components/TrackContainer";
 import Controls from "../components/ControlsContainer";
 import { useMusic } from "../hooks/useMusic";
 
-import constants from "../constants/index";
-
 import { LinearGradient } from "expo-linear-gradient";
-
-const { UPDATE_PLAYING, UPDATE_BUFFERING } = constants;
 
 export default function Home() {
 
@@ -28,8 +23,6 @@ export default function Home() {
 
     console.log("---------------------------//----------------------");
 
-    const HandlePlayTrack = () => HandlePlaySong();
-
     return (
       <LinearGradient
         colors={["#626262", "#737373"]}
@@ -44,10 +37,8 @@ export default function Home() {
             sliderValue={sliderValue}
           />
           <Controls
-             HandlePlay={HandlePlayTrack}
-             isPlaying={state.isPlaying}
-             HandleFastFoward={() => {}}
-             HandleRewind={() => {}}
+             HandlePlay={HandlePlaySong}
+             isPlaying={state.isPlaying}             
              disabled={!state.isTrackInit}
           />
       </LinearGradient>

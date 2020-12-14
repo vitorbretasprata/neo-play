@@ -4,7 +4,9 @@ import styled from "styled-components/native";
 import NeuMorph from "./NeuMorph";
 
 function ArtContainer() {
-    console.log("Art Container")
+
+    console.log("Art Container");
+
     return (
         <SongContainer>
             <SongArtContainer>
