@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { View } from "react-native";
+import React from 'react';
 
 import HeaderHome from "../components/HeaderHome";
 import ArtContainer from "../components/ArtContainer";
@@ -10,6 +9,7 @@ import { useStorageMusic } from "../hooks/useStorageMusic";
 
 import constants from "../constants/index";
 
+import { LinearGradient } from "expo-linear-gradient";
 
 const { UPDATE_PLAYING, UPDATE_BUFFERING } = constants;
 
@@ -21,8 +21,10 @@ export default function Home({ navigation } : any) {
     console.log("---------------------------//----------------------");
 
     return (
-      <View
-        style={{ flex: 1, backgroundColor: "#707070" }}
+      <LinearGradient
+        colors={["#626262", "#737373"]}
+        start={[0.1, 0.2]}
+        style={{ flex: 1 }}
       >
           <HeaderHome navigation={() => navigation.navigate("List")}/>
           <ArtContainer />
@@ -33,6 +35,6 @@ export default function Home({ navigation } : any) {
              HandleFastFoward={() => {}}
              HandleRewind={() => {}}
           />
-      </View>
+      </LinearGradient>
     );
 }
