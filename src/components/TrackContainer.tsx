@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { memo } from 'react';
 import styled from "styled-components/native";
 
 import Slider from "@react-native-community/slider";
 
-function Track() {
+interface ITrack {
+    slidingStarted : () => void, 
+    slidingCompleted : (value : number) => void, 
+    sliderValue : number 
+}
+
+function Track({ slidingStarted, slidingCompleted, sliderValue } : ITrack) {
 
     console.log("Track");
 
@@ -21,14 +27,17 @@ function Track() {
                     minimumTrackTintColor="#FFFFFF"
                     maximumTrackTintColor="#000000"
                     thumbTintColor="#789BFF"
+                    value={sliderValue}
+                    onSlidingStart={slidingStarted}
+                    onSlidingComplete={slidingCompleted}
                 />
                 <Time>3:51</Time>
             </AlignContainer>
-        </TrackContainer>        
+        </TrackContainer>
     );
 }
 
-export default Track;
+export default memo(Track);
 
 const TrackContainer = styled.View`
     margin: 0 32px 16px 32px;

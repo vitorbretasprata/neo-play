@@ -2,6 +2,8 @@ import { useReducer, useEffect } from "react";
 import * as MediaLibrary from "expo-media-library";
 import Constants from "../constants/index";
 
+import TrackPlayer from 'react-native-track-player';
+
 interface IMusicStarage {
     musicList: Array<Object>,
     endCursor: number,
@@ -49,32 +51,36 @@ export const useStorageMusic = () => {
     const [storageState, storageDispatch] = useReducer(reducer, initState);
 
     useEffect(() => {
-        _getMusics();
+        trackPlayerInit();
     }, []);
 
-    const _getMusics = async () => {        
+    const trackPlayerInit = async () => {
+        await TrackPlayer.setupPlayer();
+        await TrackPlayer.add({
+          id: '1',
+          url:
+            'https://audio-previews.elements.envatousercontent.com/files/103682271/preview.mp3',
+          type: 'default',
+          title: 'My Title',
+          album: 'My Album',
+          artist: 'Rohan Bhatia',
+          artwork: 'https://picsum.photos/100',
+        });
+        return true;
+    };
+
+
+    const _getMusics = async () => {
         if(storageState.musicList.length === 0) {
             const initStatus = {
                 first: 1500,
                 mediaType: MediaLibrary.MediaType.audio
             }
 
-            console.log(storageState)
-    
             const media = await MediaLibrary.getAssetsAsync(initStatus);
-            console.log(media)
 
-            storageDispatch({
-                type: FETCH_MUSICS,
-                payload: { 
-                    musicList: media.assets,
-                    endCursor: media.endCursor,
-                    totalCount: media.totalCount,
-                    hasNextPage: media.hasNextPage,  
-                }
-            });
-        }        
-    }   
+        }
+    }
 
     return { storageState, storageDispatch };
 }

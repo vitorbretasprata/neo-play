@@ -4,26 +4,27 @@ import styled from "styled-components/native";
 import NeuMorph from "./NeuMorph";
 
 function ArtContainer() {
+    console.log("Art Container")
     return (
         <SongContainer>
             <SongArtContainer>
-                <NeuMorph size={200}>
+                <NeuMorph size={240} handlePress={() => {}}>
                     <SongArt source={require("../assets/images/album.jpeg")} />
-                </NeuMorph>                            
+                </NeuMorph>
             </SongArtContainer>
 
             <SongInfoContainer>
                 <SongArtist>Lost it</SongArtist>
                 <SongName>Flume ft. Vic Mensa</SongName>
             </SongInfoContainer>
-        </SongContainer>        
+        </SongContainer>
     );
 }
 
 export default memo(ArtContainer);
 
 const SongContainer = styled.View`
-    margin: 32px 0;
+    margin: 32px 0 0 0;
 `;
 
 const SongArtContainer = styled.View`

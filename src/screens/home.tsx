@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
+import { View } from "react-native";
 
 import HeaderHome from "../components/HeaderHome";
 import ArtContainer from "../components/ArtContainer";
 import Track from "../components/TrackContainer";
 import Controls from "../components/ControlsContainer";
 import { useMusic } from "../hooks/useMusic";
-import { useStorageMusic } from "../hooks/useStorageMusic";
 
 import constants from "../constants/index";
 
@@ -13,12 +13,22 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const { UPDATE_PLAYING, UPDATE_BUFFERING } = constants;
 
-export default function Home({ navigation } : any) {
+export default function Home() {
 
-    const { state, dispatch, fastfoward, rewind, index } = useMusic();
-    const { storageState } = useStorageMusic();
+    const { 
+      state, 
+      fastfoward, 
+      rewind, 
+      index, 
+      HandlePlaySong, 
+      slidingStarted, 
+      slidingCompleted, 
+      sliderValue 
+    } = useMusic();
 
     console.log("---------------------------//----------------------");
+
+    const HandlePlayTrack = () => HandlePlaySong();
 
     return (
       <LinearGradient
@@ -26,14 +36,19 @@ export default function Home({ navigation } : any) {
         start={[0.1, 0.2]}
         style={{ flex: 1 }}
       >
-          <HeaderHome navigation={() => navigation.navigate("List")}/>
+          <HeaderHome />
           <ArtContainer />
-          <Track />
+          <Track
+            slidingStarted={slidingStarted}
+            slidingCompleted={slidingCompleted}
+            sliderValue={sliderValue}
+          />
           <Controls
-             HandlePlay={() => {}}
+             HandlePlay={HandlePlayTrack}
              isPlaying={state.isPlaying}
              HandleFastFoward={() => {}}
              HandleRewind={() => {}}
+             disabled={!state.isTrackInit}
           />
       </LinearGradient>
     );
