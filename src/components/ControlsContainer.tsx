@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import styled from "styled-components/native";
 
 import NeuMorph from "./NeuMorph";
+import { GlobalStyles } from "../screens/global/styles";
 import { GestureResponderEvent } from 'react-native';
 import Entypo from "react-native-vector-icons/Entypo";
 
@@ -20,15 +21,16 @@ function Controls({ HandlePlay, isPlaying, disabled } : IControls) {
         <ControlsContainer>
             <AlignContainer>
                 <NeuMorph size={40} handlePress={() => {}}>
-                    
+                    <Entypo name="controller-fast-backward" size={18} color="#eee" />
                 </NeuMorph>
 
                 <NeuMorph size={60} handlePress={HandlePlay}>
-                    <Entypo name="controller-play" size={24} color="#eee" />
+                    {isPlaying ? <Entypo style={{...GlobalStyles.NeonText}} name="controller-paus" size={24} color="#eee" /> : <Entypo name="controller-play" size={24} color="#eee" />}
+                    
                 </NeuMorph>
 
                 <NeuMorph size={40} handlePress={() => {}}>
-                    
+                    <Entypo name="controller-fast-forward" size={18} color="#eee" />
                 </NeuMorph>
             </AlignContainer>
         </ControlsContainer>
