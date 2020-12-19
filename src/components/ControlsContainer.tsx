@@ -9,28 +9,48 @@ import Entypo from "react-native-vector-icons/Entypo";
 interface IControls {
     isPlaying: boolean,
     disabled: boolean,
-    HandlePlay: (Event : GestureResponderEvent) => void
-    
+    HandlePlay: (Event : GestureResponderEvent) => void,
+    handleBackward: (Event : GestureResponderEvent) => void
 }
 
-function Controls({ HandlePlay, isPlaying, disabled } : IControls) {
+function Controls({ HandlePlay, handleBackward, isPlaying, disabled } : IControls) {
 
     console.log("Controls");
 
     return (
         <ControlsContainer>
             <AlignContainer>
-                <NeuMorph size={40} handlePress={() => {}}>
-                    <Entypo name="controller-fast-backward" size={18} color="#eee" />
+                <NeuMorph size={40} handlePress={handleBackward}>
+                    <Entypo 
+                        style={{...GlobalStyles.NeonIcon}}
+                        name="controller-fast-backward" 
+                        size={18} 
+                    />
                 </NeuMorph>
 
                 <NeuMorph size={60} handlePress={HandlePlay}>
-                    {isPlaying ? <Entypo style={{...GlobalStyles.NeonText}} name="controller-paus" size={24} color="#eee" /> : <Entypo name="controller-play" size={24} color="#eee" />}
-                    
+                    {
+                    isPlaying ? 
+                        <Entypo 
+                            style={{...GlobalStyles.NeonIcon}} 
+                            name="controller-paus" 
+                            size={24} 
+                        /> 
+                    : 
+                        <Entypo 
+                            style={{...GlobalStyles.NeonIcon}} 
+                            name="controller-play" 
+                            size={24} 
+                        />
+                    }
                 </NeuMorph>
 
                 <NeuMorph size={40} handlePress={() => {}}>
-                    <Entypo name="controller-fast-forward" size={18} color="#eee" />
+                    <Entypo 
+                        style={{...GlobalStyles.NeonIcon}} 
+                        name="controller-fast-forward" 
+                        size={18} 
+                    />
                 </NeuMorph>
             </AlignContainer>
         </ControlsContainer>

@@ -19,9 +19,7 @@ const NeuMorph : React.FC<INeuMorph> = ({ children, size, bgColor, handlePress }
         handlePress();
         setPress(false);
     }
-
-    console.log("NeuMorph");
-
+    
     const borderRadiusStyle = size ? size / 2 : 40 / 2 
 
     return (
@@ -29,7 +27,6 @@ const NeuMorph : React.FC<INeuMorph> = ({ children, size, bgColor, handlePress }
             onTouchStart={handlePressStart}
             onTouchEnd={handlePressEnd}
             inner={press}
-            
             style={{
                 ...styles.neoMorph, 
                 borderRadius: borderRadiusStyle,
@@ -47,7 +44,7 @@ export default memo(NeuMorph);
 
 const styles = StyleSheet.create({
     neoMorph: {
-        shadowRadius: 10,
+        shadowRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'
     }

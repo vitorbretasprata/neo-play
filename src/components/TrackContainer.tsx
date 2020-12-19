@@ -6,12 +6,12 @@ import Slider from "@react-native-community/slider";
 interface ITrack {
     slidingStarted : () => void, 
     slidingCompleted : (value : number) => void, 
-    sliderValue : number 
+    sliderValue : number ,
+    songTime: number,
+    currentTime: number
 }
 
-function Track({ slidingStarted, slidingCompleted, sliderValue } : ITrack) {
-
-    console.log("Track", sliderValue);
+function Track({ slidingStarted, slidingCompleted, sliderValue, currentTime, songTime } : ITrack) {
 
     return (
         <TrackContainer>

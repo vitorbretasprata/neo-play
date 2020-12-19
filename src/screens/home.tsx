@@ -18,10 +18,10 @@ export default function Home() {
       HandlePlaySong, 
       slidingStarted, 
       slidingCompleted, 
-      sliderValue 
+      sliderValue,
+      duration, 
+      position
     } = useMusic();
-
-    console.log("---------------------------//----------------------");
 
     return (
       <LinearGradient
@@ -35,11 +35,14 @@ export default function Home() {
             slidingStarted={slidingStarted}
             slidingCompleted={slidingCompleted}
             sliderValue={sliderValue}
+            currentTime={position}
+            songTime={duration}
           />
           <Controls
-             HandlePlay={HandlePlaySong}
-             isPlaying={state.isPlaying}             
-             disabled={!state.isTrackInit}
+              handleBackward={rewind}
+              HandlePlay={HandlePlaySong}
+              isPlaying={state.isPlaying}             
+              disabled={!state.isTrackInit}
           />
       </LinearGradient>
     );

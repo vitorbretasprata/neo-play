@@ -18,5 +18,16 @@ export const GlobalStyles = StyleSheet.create({
         elevation: 4,
         fontSize: 18,
         fontWeight: "800"
+    },
+    NeonIcon: {
+        textShadowColor: 'rgba(47, 214, 224, 1)',
+        textShadowOffset: {
+            width: 0,
+            height: 0
+        },
+        textShadowRadius: 16,
+        color: "#6ef6ff",
+        elevation: 4,
+        fontWeight: "800"
     }
 });

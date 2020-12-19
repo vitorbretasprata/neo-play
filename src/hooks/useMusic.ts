@@ -2,9 +2,10 @@ import { useState, useReducer, useCallback, DispatchWithoutAction, useEffect } f
 import constants from "../constants/index";
 
 import * as MediaLibrary from "expo-media-library";
-import TrackPlayer from 'react-native-track-player';
+import TrackPlayer, { STATE_PLAYING } from 'react-native-track-player';
 
-import { useTrackPlayerProgress } from 'react-native-track-player/lib/hooks';
+import { useTrackPlayerProgress, useTrackPlayerEvents } from 'react-native-track-player/lib/hooks';
+import { PLAYBACK_STATE } from "react-native-track-player/lib/eventTypes";
 
 interface IMusicTrack {
     shouldPlay: boolean,
@@ -126,20 +127,26 @@ export const useMusic = () => {
 
     const { position, duration } = useTrackPlayerProgress(250);
 
-
-    const rewind = () => {
-        setIndex((curState) => curState + 1);
-    }
-
-    const fastfoward = () => {
-        setIndex((curState) => curState - 1);
-    }
-
     useEffect(() => {
-        if(state.isSeeking && position && duration) {
+        if(!state.isSeeking && position && duration) {
             setSliderValue(position / duration);
         }
     }, [position, duration]);
+
+    useTrackPlayerEvents([PLAYBACK_STATE], (event : any)  => {
+        if (event.state === STATE_PLAYING) {
+            dispatch({
+                type: UPDATE_PLAYING,
+                payload: { isPlaying: true }
+            });
+        } else {
+            dispatch({
+                type: UPDATE_PLAYING,
+                payload: { isPlaying: false }
+            });
+        }
+      });
+    
 
     useEffect(() => {
         const initTrack = async () => {
@@ -188,5 +195,22 @@ export const useMusic = () => {
         [dispatch, state],
     );
 
-    return { state, index, rewind, fastfoward, HandlePlaySong, slidingStarted, slidingCompleted, sliderValue };
+    const rewind = useCallback(
+        async () => {
+            console.log(position > 1.5, position)
+            if(position > 1.5) {
+                await TrackPlayer.seekTo(0);
+                setSliderValue(0);
+            } else {
+                setIndex((curState) => curState + 1);
+            }
+        },
+        []
+    );
+
+    const fastfoward = () => {
+        setIndex((curState) => curState - 1);
+    }
+
+    return { state, index, rewind, fastfoward, HandlePlaySong, slidingStarted, slidingCompleted, sliderValue, duration, position };
 }
