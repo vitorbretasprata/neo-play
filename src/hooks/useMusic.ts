@@ -100,6 +100,16 @@ const trackPlayerInit = async () => {
             artwork: 'https://picsum.photos/100',
         });
 
+        TrackPlayer.updateOptions({
+            stopWithApp: false,
+            capabilities: [
+              TrackPlayer.CAPABILITY_PLAY,
+              TrackPlayer.CAPABILITY_PAUSE,
+              TrackPlayer.CAPABILITY_JUMP_FORWARD,
+              TrackPlayer.CAPABILITY_JUMP_BACKWARD,
+            ],
+        });
+
         return true;
 
     } catch (error) {

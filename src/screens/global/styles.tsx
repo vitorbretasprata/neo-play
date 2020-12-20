@@ -19,6 +19,18 @@ export const GlobalStyles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "800"
     },
+    MiniNeonText: {
+        textShadowColor: 'rgba(47, 214, 224, 1)',
+        textShadowOffset: {
+            width: 0,
+            height: 0
+        },
+        textShadowRadius: 10,
+        color: "#fff",
+        elevation: 4,
+        fontSize: 10,
+        fontWeight: "700"
+    },
     NeonIcon: {
         textShadowColor: 'rgba(47, 214, 224, 1)',
         textShadowOffset: {
