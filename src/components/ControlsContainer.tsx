@@ -15,8 +15,6 @@ interface IControls {
 
 function Controls({ HandlePlay, handleBackward, isPlaying, disabled } : IControls) {
 
-    console.log("Controls");
-
     return (
         <ControlsContainer>
             <AlignContainer>

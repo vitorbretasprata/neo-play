@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { re} from 'react';
 
 import HeaderHome from "../components/HeaderHome";
 import ArtContainer from "../components/ArtContainer";
@@ -8,7 +8,7 @@ import { useMusic } from "../hooks/useMusic";
 
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function Home() {
+export default function Home(props : any) {
 
     const { 
       state, 
@@ -23,13 +23,15 @@ export default function Home() {
       position
     } = useMusic();
 
+    const toggleDrawer = () => props.navigation.toggleDrawer();
+
     return (
       <LinearGradient
         colors={["#626262", "#737373"]}
         start={[0.1, 0.2]}
         style={{ flex: 1 }}
       >
-          <HeaderHome />
+          <HeaderHome toggleNavigation={toggleDrawer}/>
           <ArtContainer />
           <Track
             slidingStarted={slidingStarted}

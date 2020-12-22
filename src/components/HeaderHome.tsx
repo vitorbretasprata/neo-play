@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 import { View, Text, StatusBar } from "react-native";
 import styled from "styled-components/native";
-import { useNavigation } from '@react-navigation/native';
 import Entypo from "react-native-vector-icons/Entypo";
 
 import NeuMorph from "./NeuMorph";
@@ -9,14 +8,14 @@ import { GlobalStyles } from "../screens/global/styles";
 
 const { currentHeight } = StatusBar;
 
-function HeaderHome() {
+interface INavigation {
+    toggleNavigation: Function
+}
 
-    const navigation = useNavigation();
+function HeaderHome({ toggleNavigation } : INavigation) {
 
-    const handleNavigation = () => {
-        
-    }
-
+    const handleNavigation = () => toggleNavigation();
+    
     return (
         <MarginSpace>
             <TopContainer>
