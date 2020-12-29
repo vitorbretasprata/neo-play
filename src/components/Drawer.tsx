@@ -8,7 +8,7 @@ import Foundation from "react-native-vector-icons/Foundation"
 import Home from "../screens/home";
 import List from "../screens/list";
 
-import Animated, { interpolate } from "react-native-reanimated";
+import Animated, { interpolate, useSharedValue } from "react-native-reanimated";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -47,16 +47,16 @@ const Screens = ({ navigation, style } : any) => {
 }
 
 export default () => {
-    const [progress, setProgress] = useState(0);
+    const progress = useSharedValue(0);
 
     const scale = interpolate(
-        0,
+        progress.value,
         [0, 1],
         [1, 0.8]
     );
 
     const borderRadius = interpolate(
-        0,
+        progress.value,
         [0, 1],
         [0, 10]
     );
@@ -78,7 +78,6 @@ export default () => {
             sceneContainerStyle={{ flex: 1 }}
             drawerContent={
                 (props : any) => {
-                    setProgress(props.progress);
                     return <DrawerContent {...props}/>;
                 }
             }
