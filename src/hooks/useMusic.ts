@@ -2,31 +2,19 @@ import { useState, useReducer, useCallback, useEffect } from "react";
 import constants from "../constants/index";
 
 import * as MediaLibrary from "expo-media-library";
-import TrackPlayer, { EventType } from 'react-native-track-player';
+import TrackPlayer from 'react-native-track-player';
+
+import { IAction, IEventState, IMusicTrack } from "./interfaces/index";
 
 import { useTrackPlayerProgress, useTrackPlayerEvents } from 'react-native-track-player/lib/hooks';
-import { PLAYBACK_STATE, REMOTE_PAUSE, REMOTE_PLAY } from "react-native-track-player/lib/eventTypes";
-
-interface IMusicTrack {
-    shouldPlay: boolean,
-    isTrackInit: boolean,
-    rate: number,
-    shouldCorrectPitch: boolean,
-    volume: number,
-    isMuted: boolean,
-    isPlaying: boolean,
-    isSeeking: boolean
-}
-
-interface IAction {
-    type: string,
-    payload : any
-}
-
-interface IEventState {
-    state: number,
-    type: EventType
-}
+import { 
+    PLAYBACK_STATE, 
+    REMOTE_PAUSE, 
+    REMOTE_PLAY, 
+    REMOTE_SEEK, 
+    REMOTE_SKIP, 
+    REMOTE_PREVIOUS 
+} from "react-native-track-player/lib/eventTypes";
 
 const initState = {
     shouldPlay: false,
@@ -44,7 +32,10 @@ const { UPDATE_PLAYING, UPDATE_BUFFERING, SET_INIT, SET_SEEKING } = constants;
 const Events = [
     PLAYBACK_STATE,
     REMOTE_PAUSE,
-    REMOTE_PLAY
+    REMOTE_PLAY,
+    REMOTE_SEEK,
+    REMOTE_SKIP,
+    REMOTE_PREVIOUS
 ];
 
 const reducer = (state : IMusicTrack, action : IAction) => {
