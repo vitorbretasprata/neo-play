@@ -10,15 +10,16 @@ interface IControls {
     isPlaying: boolean,
     disabled: boolean,
     HandlePlay: (Event : GestureResponderEvent) => void,
-    handleBackward: (Event : GestureResponderEvent) => void
+    HandleBackward: (Event : GestureResponderEvent) => void,
+    HandleFastfoward: (Event : GestureResponderEvent) => void
 }
 
-function Controls({ HandlePlay, handleBackward, isPlaying, disabled } : IControls) {
+function Controls({ HandlePlay, HandleBackward, HandleFastfoward, isPlaying, disabled } : IControls) {
 
     return (
         <ControlsContainer>
             <AlignContainer>
-                <NeuMorph size={40} handlePress={handleBackward}>
+                <NeuMorph size={40} handlePress={HandleBackward}>
                     <Entypo 
                         style={{...GlobalStyles.NeonIcon}}
                         name="controller-fast-backward" 
@@ -43,7 +44,7 @@ function Controls({ HandlePlay, handleBackward, isPlaying, disabled } : IControl
                     }
                 </NeuMorph>
 
-                <NeuMorph size={40} handlePress={() => {}}>
+                <NeuMorph size={40} handlePress={HandleFastfoward}>
                     <Entypo 
                         style={{...GlobalStyles.NeonIcon}} 
                         name="controller-fast-forward" 

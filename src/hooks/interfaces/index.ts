@@ -8,7 +8,8 @@ export interface IMusicTrack {
     volume: number,
     isMuted: boolean,
     isPlaying: boolean,
-    isSeeking: boolean
+    isSeeking: boolean,
+    firstTrackId: number
 }
 
 export interface IAction {

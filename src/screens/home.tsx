@@ -1,4 +1,4 @@
-import React, { re} from 'react';
+import React from 'react';
 
 import HeaderHome from "../components/HeaderHome";
 import ArtContainer from "../components/ArtContainer";
@@ -13,8 +13,7 @@ export default function Home(props : any) {
     const { 
       state, 
       fastfoward, 
-      rewind, 
-      index, 
+      rewind,  
       HandlePlaySong, 
       slidingStarted, 
       slidingCompleted, 
@@ -41,7 +40,8 @@ export default function Home(props : any) {
             songTime={duration}
           />
           <Controls
-              handleBackward={rewind}
+              HandleBackward={rewind}
+              HandleFastfoward={fastfoward}
               HandlePlay={HandlePlaySong}
               isPlaying={state.isPlaying}             
               disabled={!state.isTrackInit}

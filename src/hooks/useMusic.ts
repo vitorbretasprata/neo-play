@@ -24,10 +24,11 @@ const initState = {
     volume: 1.0,
     isMuted: false,
     isPlaying: false,
-    isSeeking: false
+    isSeeking: false,
+    firstTrackId: 0
 }
 
-const { UPDATE_PLAYING, UPDATE_BUFFERING, SET_INIT, SET_SEEKING } = constants;
+const { UPDATE_PLAYING, UPDATE_BUFFERING, SET_INIT, SET_SEEKING, SET_FIRST_TRACK } = constants;
 
 const Events = [
     PLAYBACK_STATE,
@@ -45,6 +46,12 @@ const reducer = (state : IMusicTrack, action : IAction) => {
             return {
                 ...state,
                 isPlaying: action.payload.isPlaying
+            }
+
+        case SET_FIRST_TRACK: 
+            return {
+                ...state,
+                firstTrackId: action.payload.firstTrackId
             }
 
         case UPDATE_BUFFERING: 
@@ -75,27 +82,26 @@ const trackPlayerInit = async () => {
 
         const songs : MediaLibrary.PagedInfo<MediaLibrary.Asset> = await _getMusics();
 
-        const musicsInfo = songs.assets.map(song => {
-            return {
-                id: song.id,
-                duration: song.duration,
-                url: song.uri,
-                title: song.filename,
-                album: 'My Album',
-                artist: 'Vitor Prata',
-            }
+        let musicsInfo : Array<TrackPlayer.Track> = [];
+
+        songs.assets.forEach(song => {
+            let re = /.flac|.ogg/g;
+
+            const isFlacOrOgg = re.test(song.filename);
+
+            if(!isFlacOrOgg) {
+                musicsInfo.push({
+                    id: song.id,
+                    duration: song.duration,
+                    url: song.uri,
+                    title: song.filename,
+                    album: song.albumId,
+                    artist: 'Vitor Prata',
+                });
+            } 
         });
 
-        await TrackPlayer.add({
-            id: '1',
-            url:
-                'https://cf-hls-media.sndcdn.com/media/3352449/3512109/o6M9UyBcRkZw.128.mp3?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLWhscy1tZWRpYS5zbmRjZG4uY29tL21lZGlhLyovKi9vNk05VXlCY1JrWncuMTI4Lm1wMyIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTYwOTI2NjE5NX19fV19&Signature=Wvcl1gTB-TA1UwJ3MrWTJ3WI5003HrkIIbSdza4EJTP4mNPfctTC8HFDdwtVR~D94V6kYouhCQTsYWbjQVFNJOsFP2N6yvpRmHKL9ravTNXznvQiWJKunRSCs56QbjYNwShj-x2onRgX3cRntjs1f~w0GCfT-N01qc95Xn6v~nY66cyQS5C~EVZly2ZqZsfcu7~0CzxJc-yMkuaFkvl8~YxVOpS8-PCzByDNIig2niQsU7304lKwVIjmXRs2bRdSJlcMj1UdwhjE4qDh~5CQs84lTKg1qIaIU5aP~BZ9VVUSND4qckyCnQkdq-JlbFx90swN25vsocRYP23CcaTiNA__&Key-Pair-Id=APKAI6TU7MMXM5DG6EPQ',
-            type: 'default',
-            title: "Make Sure It's For Sure",
-            album: 'Am I Doing This Right?',
-            artist: 'Chad Neidt',
-            artwork: 'https://f4.bcbits.com/img/a1463017383_16.jpg',
-        });
+        await TrackPlayer.add(musicsInfo);
 
         TrackPlayer.updateOptions({
             stopWithApp: false,
@@ -108,7 +114,7 @@ const trackPlayerInit = async () => {
             ]
         });
 
-        return true;
+        return musicsInfo[0].id;
 
     } catch (error) {
         console.log(error)
@@ -132,6 +138,10 @@ export const useMusic = () => {
     const [sliderValue, setSliderValue] = useState(0);
 
     const { position, duration } = useTrackPlayerProgress(250);
+
+    const getPositionAsync = async () => {
+        console.log(await TrackPlayer.getPosition())
+    }  
 
     useEffect(() => {
         if(!state.isSeeking && position && duration) {
@@ -157,12 +167,19 @@ export const useMusic = () => {
 
     useEffect(() => {
         const initTrack = async () => {
-            const init = await trackPlayerInit();
+            const firstTrack = await trackPlayerInit();
 
-            dispatch({
-                type: SET_INIT,
-                payload: { isTrackInit: init }
-            });
+            if(firstTrack) {
+                dispatch({
+                    type: SET_INIT,
+                    payload: { isTrackInit: true }
+                });
+    
+                dispatch({
+                    type: SET_FIRST_TRACK,
+                    payload: { firstTrackId: firstTrack }
+                });
+            }            
         }
 
         initTrack();
@@ -204,21 +221,21 @@ export const useMusic = () => {
     );
 
     const rewind = useCallback(
-        async () => {
-            if(position > 1.5) {
+        async () => {   
+            const currentTrack = await TrackPlayer.getCurrentTrack();         
+            if(state.firstTrackId === currentTrack || position > 1.5) {
                 await TrackPlayer.seekTo(0);
                 setSliderValue(0);
-            } 
+            } else {
+                await TrackPlayer.skipToPrevious();
+            }
         },
         []
     );
 
-    const fastfoward = () => useCallback(
-        async () => {
-            if(position > 1.5) {
-                await TrackPlayer.seekTo(0);
-                setSliderValue(0);
-            } 
+    const fastfoward = useCallback(
+        async () => {            
+            await TrackPlayer.skipToNext();
         },
         []
     );
