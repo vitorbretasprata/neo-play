@@ -25,10 +25,11 @@ const initState = {
     isMuted: false,
     isPlaying: false,
     isSeeking: false,
-    firstTrackId: 0
+    firstTrackId: 0,
+    currentTrack: {}
 }
 
-const { UPDATE_PLAYING, UPDATE_BUFFERING, SET_INIT, SET_SEEKING, SET_FIRST_TRACK } = constants;
+const { UPDATE_PLAYING, UPDATE_BUFFERING, SET_INIT, SET_SEEKING, SET_FIRST_TRACK, SET_CURRENT_TRACK } = constants;
 
 const Events = [
     PLAYBACK_STATE,
@@ -46,6 +47,12 @@ const reducer = (state : IMusicTrack, action : IAction) => {
             return {
                 ...state,
                 isPlaying: action.payload.isPlaying
+            }
+
+        case SET_CURRENT_TRACK: 
+            return {
+                ...state,
+                currentTrack: action.payload.currentTrack
             }
 
         case SET_FIRST_TRACK: 
@@ -139,10 +146,6 @@ export const useMusic = () => {
 
     const { position, duration } = useTrackPlayerProgress(250);
 
-    const getPositionAsync = async () => {
-        console.log(await TrackPlayer.getPosition())
-    }  
-
     useEffect(() => {
         if(!state.isSeeking && position && duration) {
             setSliderValue(position / duration);
@@ -170,6 +173,8 @@ export const useMusic = () => {
             const firstTrack = await trackPlayerInit();
 
             if(firstTrack) {
+                setCurrentTrack();
+
                 dispatch({
                     type: SET_INIT,
                     payload: { isTrackInit: true }
@@ -229,13 +234,27 @@ export const useMusic = () => {
             } else {
                 await TrackPlayer.skipToPrevious();
             }
+
+            setCurrentTrack();
         },
         []
     );
 
+    const setCurrentTrack = async () => {
+        const currentId = await TrackPlayer.getCurrentTrack();
+
+        const currentTrack = await TrackPlayer.getTrack(currentId);
+
+        dispatch({
+            type: SET_CURRENT_TRACK,
+            payload: { currentTrack: currentTrack }
+        });
+    }
+
     const fastfoward = useCallback(
         async () => {            
             await TrackPlayer.skipToNext();
+            setCurrentTrack();
         },
         []
     );

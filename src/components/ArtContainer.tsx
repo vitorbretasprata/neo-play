@@ -1,9 +1,16 @@
 import React, { memo } from 'react';
 import styled from "styled-components/native";
 
+import { Track } from "react-native-track-player";
+
 import NeuMorph from "./NeuMorph";
 
-function ArtContainer() {
+interface IArtContainer {
+    currentTrack: Track
+}
+
+function ArtContainer({ currentTrack } : IArtContainer) {
+    console.log(currentTrack)
     return (
         <SongContainer>
             <SongArtContainer>
@@ -11,8 +18,8 @@ function ArtContainer() {
             </SongArtContainer>
 
             <SongInfoContainer>
-                <SongArtist>Lost it</SongArtist>
-                <SongName>Flume ft. Vic Mensa</SongName>
+                <SongArtist>{currentTrack.artist || "N/A"}</SongArtist>
+                <SongName>{currentTrack.title || "Titulo"}</SongName>
             </SongInfoContainer>
         </SongContainer>
     );

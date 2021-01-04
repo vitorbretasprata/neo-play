@@ -9,7 +9,8 @@ export interface IMusicTrack {
     isMuted: boolean,
     isPlaying: boolean,
     isSeeking: boolean,
-    firstTrackId: number
+    firstTrackId: number,
+    currentTrack: object
 }
 
 export interface IAction {
