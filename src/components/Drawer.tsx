@@ -1,38 +1,25 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import React from "react";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
-
-import Foundation from "react-native-vector-icons/Foundation"
 
 import Home from "../screens/home";
 import List from "../screens/list";
 
-import Animated, { interpolate } from "react-native-reanimated";
+import DrawerContent from "./CustomDrawer";
+
+import Animated, { interpolate, useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
-const DrawerContent = (props : any) => {
-    return (
-        <DrawerContentScrollView {...props}>
-            <DrawerItem 
-                label="Home"
-                onPress={() => props.navigation.navigate("Home")}
-                icon={() => <Foundation name="music" size={16} />}
-            />
-            <DrawerItem 
-                label="List"
-                onPress={() => props.navigation.navigate("List")}
-                icon={() => <Foundation name="list" size={16} />}
-            />
-        </DrawerContentScrollView>
-    )
-}
-
 const Screens = ({ navigation, style } : any) => {
     return (
-        <Animated.View style={[{ flex: 1 }, style]}>
+        <Animated.View style={
+            [
+                { flex: 1 }, 
+                style
+            ]
+        }>
             <Stack.Navigator
                 screenOptions={{ 
                     headerShown: false
@@ -42,27 +29,32 @@ const Screens = ({ navigation, style } : any) => {
                 <Stack.Screen name="List" component={List}/>
             </Stack.Navigator>
         </Animated.View>
-    )
+    );
 
 }
 
 export default () => {
-    const [progress, setProgress] = useState(0);
+    const progress = useSharedValue(0);
 
-    const scale = interpolate(
-        0,
-        [0, 1],
-        [1, 0.8]
-    );
+    const style = useAnimatedStyle(() => {
+        return {
+            borderRadius: interpolate(
+                progress.value,
+                [0, 1],
+                [0, 10]
+            ),
+            transform: [
+                {
+                    scale: interpolate(
+                        progress.value,
+                        [0, 1],
+                        [1, 0.8]
+                    )
+                }
+            ]
+        };
+    }, [progress.value]);
 
-    const borderRadius = interpolate(
-        0,
-        [0, 1],
-        [0, 10]
-    );
-
-    const screenStyle = { borderRadius, transform: [{ scale }]};
-    
     return (
         <Drawer.Navigator 
             drawerPosition="left"
@@ -74,17 +66,12 @@ export default () => {
                 activeTintColor: "green",
                 inactiveTintColor: "green"
             }}
-            drawerStyle={{ width: "50%", activeBackgroundColor: "transparent" }}
+            drawerStyle={{ width: "60%", backgroundColor: "transparent" }}
             sceneContainerStyle={{ flex: 1 }}
-            drawerContent={
-                (props : any) => {
-                    setProgress(props.progress);
-                    return <DrawerContent {...props}/>;
-                }
-            }
+            drawerContent={DrawerContent}
         >
             <Drawer.Screen name="Screens"> 
-                {(props : any) => <Screens {...props} style={screenStyle} />}
+                {(props : any) => <Screens {...props} style={style} />}
             </Drawer.Screen>
         </Drawer.Navigator>
     )
