@@ -1,32 +1,20 @@
-import { useState, useReducer, useCallback, DispatchWithoutAction, useEffect } from "react";
+import { useState, useReducer, useCallback, useEffect } from "react";
 import constants from "../constants/index";
 
 import * as MediaLibrary from "expo-media-library";
-import TrackPlayer, { STATE_PLAYING } from 'react-native-track-player';
+import TrackPlayer from 'react-native-track-player';
+
+import { IAction, IEventState, IMusicTrack } from "./interfaces/index";
 
 import { useTrackPlayerProgress, useTrackPlayerEvents } from 'react-native-track-player/lib/hooks';
-import { PLAYBACK_STATE } from "react-native-track-player/lib/eventTypes";
-
-interface IMusicTrack {
-    shouldPlay: boolean,
-    isTrackInit: boolean,
-    rate: number,
-    shouldCorrectPitch: boolean,
-    volume: number,
-    isMuted: boolean,
-    isPlaying: boolean,
-    isSeeking: boolean
-}
-
-interface IAction {
-    type: string,
-    payload : any
-}
-
-interface IReducer {
-    reducer: IMusicTrack,
-    dispatch: DispatchWithoutAction
-}
+import { 
+    PLAYBACK_STATE, 
+    REMOTE_PAUSE, 
+    REMOTE_PLAY, 
+    REMOTE_SEEK, 
+    REMOTE_SKIP, 
+    REMOTE_PREVIOUS 
+} from "react-native-track-player/lib/eventTypes";
 
 const initState = {
     shouldPlay: false,
@@ -40,6 +28,15 @@ const initState = {
 }
 
 const { UPDATE_PLAYING, UPDATE_BUFFERING, SET_INIT, SET_SEEKING } = constants;
+
+const Events = [
+    PLAYBACK_STATE,
+    REMOTE_PAUSE,
+    REMOTE_PLAY,
+    REMOTE_SEEK,
+    REMOTE_SKIP,
+    REMOTE_PREVIOUS
+];
 
 const reducer = (state : IMusicTrack, action : IAction) => {
 
@@ -87,17 +84,17 @@ const trackPlayerInit = async () => {
                 album: 'My Album',
                 artist: 'Vitor Prata',
             }
-        })
+        });
 
         await TrackPlayer.add({
             id: '1',
             url:
-                'https://audio-previews.elements.envatousercontent.com/files/103682271/preview.mp3',
+                'https://cf-hls-media.sndcdn.com/media/3352449/3512109/o6M9UyBcRkZw.128.mp3?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiKjovL2NmLWhscy1tZWRpYS5zbmRjZG4uY29tL21lZGlhLyovKi9vNk05VXlCY1JrWncuMTI4Lm1wMyIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTYwOTI2NjE5NX19fV19&Signature=Wvcl1gTB-TA1UwJ3MrWTJ3WI5003HrkIIbSdza4EJTP4mNPfctTC8HFDdwtVR~D94V6kYouhCQTsYWbjQVFNJOsFP2N6yvpRmHKL9ravTNXznvQiWJKunRSCs56QbjYNwShj-x2onRgX3cRntjs1f~w0GCfT-N01qc95Xn6v~nY66cyQS5C~EVZly2ZqZsfcu7~0CzxJc-yMkuaFkvl8~YxVOpS8-PCzByDNIig2niQsU7304lKwVIjmXRs2bRdSJlcMj1UdwhjE4qDh~5CQs84lTKg1qIaIU5aP~BZ9VVUSND4qckyCnQkdq-JlbFx90swN25vsocRYP23CcaTiNA__&Key-Pair-Id=APKAI6TU7MMXM5DG6EPQ',
             type: 'default',
-            title: 'My Title',
-            album: 'My Album',
-            artist: 'Rohan Bhatia',
-            artwork: 'https://picsum.photos/100',
+            title: "Make Sure It's For Sure",
+            album: 'Am I Doing This Right?',
+            artist: 'Chad Neidt',
+            artwork: 'https://f4.bcbits.com/img/a1463017383_16.jpg',
         });
 
         TrackPlayer.updateOptions({
@@ -105,9 +102,10 @@ const trackPlayerInit = async () => {
             capabilities: [
               TrackPlayer.CAPABILITY_PLAY,
               TrackPlayer.CAPABILITY_PAUSE,
-              TrackPlayer.CAPABILITY_JUMP_FORWARD,
-              TrackPlayer.CAPABILITY_JUMP_BACKWARD,
-            ],
+              TrackPlayer.CAPABILITY_SKIP,
+              TrackPlayer.CAPABILITY_SKIP_TO_NEXT,
+              TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
+            ]
         });
 
         return true;
@@ -128,11 +126,9 @@ const _getMusics = async () => {
     return media;
 }
 
-
 export const useMusic = () => {
 
     const [state, dispatch] = useReducer(reducer, initState);
-    const [index, setIndex] = useState(0);
     const [sliderValue, setSliderValue] = useState(0);
 
     const { position, duration } = useTrackPlayerProgress(250);
@@ -143,20 +139,21 @@ export const useMusic = () => {
         }
     }, [position, duration]);
 
-    useTrackPlayerEvents([PLAYBACK_STATE], (event : any)  => {
-        if (event.state === STATE_PLAYING) {
+    useTrackPlayerEvents(Events, (event : IEventState)  => {
+
+        if (event.type === REMOTE_PLAY)
             dispatch({
                 type: UPDATE_PLAYING,
                 payload: { isPlaying: true }
             });
-        } else {
+         
+        
+        if(event.type === REMOTE_PAUSE)
             dispatch({
                 type: UPDATE_PLAYING,
                 payload: { isPlaying: false }
             });
-        }
-      });
-    
+    });    
 
     useEffect(() => {
         const initTrack = async () => {
@@ -169,15 +166,7 @@ export const useMusic = () => {
         }
 
         initTrack();
-    }, []);
-
-    useEffect(() => {
-        if(state.isPlaying) 
-            TrackPlayer.play();
-        else
-            TrackPlayer.pause();
-    }, [state.isPlaying]);
-    
+    }, []);   
 
     const slidingStarted = () => {
         dispatch({
@@ -197,30 +186,52 @@ export const useMusic = () => {
 
     const HandlePlaySong = useCallback(
         () => {
-            dispatch({
-                type: UPDATE_PLAYING,
-                payload: { isPlaying: !state.isPlaying }
-            });
+            if(state.isPlaying) {
+                TrackPlayer.pause();
+                dispatch({
+                    type: UPDATE_PLAYING,
+                    payload: { isPlaying: false }
+                });
+            } else {
+                TrackPlayer.play();
+                dispatch({
+                    type: UPDATE_PLAYING,
+                    payload: { isPlaying: true }
+                });
+            }
         },
         [dispatch, state],
     );
 
     const rewind = useCallback(
         async () => {
-            console.log(position > 1.5, position)
             if(position > 1.5) {
                 await TrackPlayer.seekTo(0);
                 setSliderValue(0);
-            } else {
-                setIndex((curState) => curState + 1);
-            }
+            } 
         },
         []
     );
 
-    const fastfoward = () => {
-        setIndex((curState) => curState - 1);
-    }
+    const fastfoward = () => useCallback(
+        async () => {
+            if(position > 1.5) {
+                await TrackPlayer.seekTo(0);
+                setSliderValue(0);
+            } 
+        },
+        []
+    );
 
-    return { state, index, rewind, fastfoward, HandlePlaySong, slidingStarted, slidingCompleted, sliderValue, duration, position };
+    return { 
+        state, 
+        rewind, 
+        fastfoward, 
+        HandlePlaySong, 
+        slidingStarted, 
+        slidingCompleted, 
+        sliderValue, 
+        duration, 
+        position
+    };
 }

@@ -4,15 +4,10 @@ import styled from "styled-components/native";
 import NeuMorph from "./NeuMorph";
 
 function ArtContainer() {
-
-    console.log("Art Container");
-
     return (
         <SongContainer>
             <SongArtContainer>
-                <NeuMorph size={240} handlePress={() => {}}>
-                    <SongArt source={require("../assets/images/album.jpeg")} />
-                </NeuMorph>
+                <SongArt source={require("../assets/images/album.jpeg")} />
             </SongArtContainer>
 
             <SongInfoContainer>
@@ -26,7 +21,7 @@ function ArtContainer() {
 export default memo(ArtContainer);
 
 const SongContainer = styled.View`
-    margin: 32px 0 0 0;
+    margin: 24px 0 0 0;
 `;
 
 const SongArtContainer = styled.View`
