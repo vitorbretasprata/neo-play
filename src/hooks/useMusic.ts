@@ -6,14 +6,15 @@ import TrackPlayer from 'react-native-track-player';
 
 import { IAction, IEventState, IMusicTrack } from "./interfaces/index";
 
-import { useTrackPlayerProgress, useTrackPlayerEvents } from 'react-native-track-player/lib/hooks';
+import { useTrackPlayerProgress, useTrackPlayerEvents } from 'react-native-track-player/lib/index';
 import { 
     PLAYBACK_STATE, 
     REMOTE_PAUSE, 
     REMOTE_PLAY, 
     REMOTE_SEEK, 
     REMOTE_SKIP, 
-    REMOTE_PREVIOUS 
+    REMOTE_PREVIOUS,
+    REMOTE_DUCK
 } from "react-native-track-player/lib/eventTypes";
 
 const initState = {
@@ -29,7 +30,7 @@ const initState = {
     currentTrack: {}
 }
 
-const { UPDATE_PLAYING, UPDATE_BUFFERING, SET_INIT, SET_SEEKING, SET_FIRST_TRACK, SET_CURRENT_TRACK } = constants;
+const { UPDATE_PLAYING, UPDATE_BUFFERING, SET_INIT, SET_SEEKING, SET_FIRST_TRACK, SET_CURRENT_TRACK, REMOTE_NEXT } = constants;
 
 const Events = [
     PLAYBACK_STATE,
@@ -37,7 +38,8 @@ const Events = [
     REMOTE_PLAY,
     REMOTE_SEEK,
     REMOTE_SKIP,
-    REMOTE_PREVIOUS
+    REMOTE_DUCK,
+    REMOTE_PREVIOUS,
 ];
 
 const reducer = (state : IMusicTrack, action : IAction) => {
@@ -92,7 +94,7 @@ const trackPlayerInit = async () => {
         let musicsInfo : Array<TrackPlayer.Track> = [];
 
         songs.assets.forEach(song => {
-            let re = /.flac|.ogg/g;
+            let re = /.flac|.mp3|.wma/g;
 
             const isFlacOrOgg = re.test(song.filename);
 
@@ -136,8 +138,6 @@ const _getMusics = async () => {
 
     const media = await MediaLibrary.getAssetsAsync(initStatus);
 
-    console.log(media)
-
     return media;
 }
 
@@ -150,25 +150,28 @@ export const useMusic = () => {
 
     useEffect(() => {
         if(!state.isSeeking && position && duration) {
+            console.log(position)
             setSliderValue(position / duration);
         }
     }, [position, duration]);
 
     useTrackPlayerEvents(Events, (event : IEventState)  => {
-
+        console.log(event.type)
         if (event.type === REMOTE_PLAY)
             dispatch({
                 type: UPDATE_PLAYING,
                 payload: { isPlaying: true }
             });
-         
-        
-        if(event.type === REMOTE_PAUSE)
+
+        if(event.type === REMOTE_PAUSE || event.type === REMOTE_DUCK)
             dispatch({
                 type: UPDATE_PLAYING,
                 payload: { isPlaying: false }
             });
-    });    
+
+        if(event.type === REMOTE_PREVIOUS || event.type === REMOTE_NEXT)
+            setCurrentTrack();
+    });
 
     useEffect(() => {
         const initTrack = async () => {
@@ -181,16 +184,16 @@ export const useMusic = () => {
                     type: SET_INIT,
                     payload: { isTrackInit: true }
                 });
-    
+
                 dispatch({
                     type: SET_FIRST_TRACK,
                     payload: { firstTrackId: firstTrack }
                 });
-            }            
+            }
         }
 
         initTrack();
-    }, []);   
+    }, []);
 
     const slidingStarted = () => {
         dispatch({
@@ -229,17 +232,16 @@ export const useMusic = () => {
 
     const rewind = useCallback(
         async () => {   
-            const currentTrack = await TrackPlayer.getCurrentTrack();         
+            const currentTrack = await TrackPlayer.getCurrentTrack();
             if(state.firstTrackId === currentTrack || position > 1.5) {
                 await TrackPlayer.seekTo(0);
-                setSliderValue(0);
             } else {
                 await TrackPlayer.skipToPrevious();
             }
-
+            setSliderValue(0);
             setCurrentTrack();
         },
-        []
+        [state.firstTrackId]
     );
 
     const setCurrentTrack = async () => {
@@ -254,8 +256,10 @@ export const useMusic = () => {
     }
 
     const fastfoward = useCallback(
-        async () => {            
+        async () => {
             await TrackPlayer.skipToNext();
+
+            setSliderValue(0);
             setCurrentTrack();
         },
         []

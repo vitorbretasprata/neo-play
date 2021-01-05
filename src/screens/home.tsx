@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import HeaderHome from "../components/HeaderHome";
 import ArtContainer from "../components/ArtContainer";
@@ -30,7 +30,7 @@ export default function Home(props : any) {
       }
     }, [state]);
 
-    const toggleDrawer = () => props.navigation.toggleDrawer();
+    const toggleDrawer = useCallback(() => props.navigation.toggleDrawer(), [props.navigation]);
 
     return (
       <LinearGradient

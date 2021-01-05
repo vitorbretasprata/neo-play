@@ -1,4 +1,4 @@
-import React, { ReactNode, memo, useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { StyleSheet } from "react-native";
 import { NeomorphBlur  } from "react-native-neomorph-shadows";
 import Animated from "react-native-reanimated";
@@ -46,7 +46,7 @@ const NeuMorph : React.FC<INeuMorph> = ({ children, size, bgColor, handlePress }
     )
 }
 
-export default memo(NeuMorph);
+export default NeuMorph;
 
 const styles = StyleSheet.create({
     neoMorph: {
