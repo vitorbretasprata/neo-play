@@ -10,7 +10,6 @@ interface IArtContainer {
 }
 
 function ArtContainer({ currentTrack } : IArtContainer) {
-    console.log(currentTrack)
     return (
         <SongContainer>
             <SongArtContainer>
@@ -18,8 +17,12 @@ function ArtContainer({ currentTrack } : IArtContainer) {
             </SongArtContainer>
 
             <SongInfoContainer>
-                <SongArtist>{currentTrack.artist || "N/A"}</SongArtist>
-                <SongName>{currentTrack.title || "Titulo"}</SongName>
+                <SongArtist numberOfLines={1} ellipsizeMode='head'>
+                    {currentTrack.artist || "Unknown"}
+                </SongArtist>
+                <SongName numberOfLines={1} ellipsizeMode='head'>
+                    {currentTrack.title || "Unknown"}
+                </SongName>
             </SongInfoContainer>
         </SongContainer>
     );

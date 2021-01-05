@@ -1,7 +1,7 @@
 import React, { ReactNode, memo, useState } from 'react';
-import { View, StyleProp, StyleSheet } from "react-native";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import { Neomorph } from "react-native-neomorph-shadows";
+import { StyleSheet } from "react-native";
+import { NeomorphBlur  } from "react-native-neomorph-shadows";
+import Animated from "react-native-reanimated";
 
 type INeuMorph = {
     children: ReactNode,
@@ -10,11 +10,15 @@ type INeuMorph = {
     handlePress: Function
 }
 
+const AnimatedNeomorphBlur = Animated.createAnimatedComponent(NeomorphBlur);
+
 const NeuMorph : React.FC<INeuMorph> = ({ children, size, bgColor, handlePress }) => {
 
     const [press, setPress] = useState(false);
 
-    const handlePressStart = () => setPress(true);
+    const handlePressStart = () => {
+        setPress(true);
+    }
     const handlePressEnd = () => {
         handlePress();
         setPress(false);
@@ -23,20 +27,22 @@ const NeuMorph : React.FC<INeuMorph> = ({ children, size, bgColor, handlePress }
     const borderRadiusStyle = size ? size / 2 : 40 / 2 
 
     return (
-        <Neomorph
+        <AnimatedNeomorphBlur 
             onTouchStart={handlePressStart}
-            onTouchEnd={handlePressEnd}
-            inner={press}
-            style={{
-                ...styles.neoMorph, 
-                borderRadius: borderRadiusStyle,
-                width: size || 40,
-                backgroundColor: bgColor || '#707070',
-                height: size || 40
-            }}
+            onTouchEnd={handlePressEnd}   
+            inner={press}         
+            style={[
+                styles.neoMorph,
+                {
+                    borderRadius: borderRadiusStyle,
+                    width: size || 40,
+                    backgroundColor: bgColor || '#707070',
+                    height: size || 40
+                }
+            ]}
         >
             {children}
-        </Neomorph>
+        </AnimatedNeomorphBlur>
     )
 }
 
@@ -44,7 +50,7 @@ export default memo(NeuMorph);
 
 const styles = StyleSheet.create({
     neoMorph: {
-        shadowRadius: 5,
+        shadowRadius: 3,
         justifyContent: 'center',
         alignItems: 'center'
     }

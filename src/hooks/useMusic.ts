@@ -103,7 +103,7 @@ const trackPlayerInit = async () => {
                     url: song.uri,
                     title: song.filename,
                     album: song.albumId,
-                    artist: 'Vitor Prata',
+                    artist: 'Unknown',
                 });
             } 
         });
@@ -135,6 +135,8 @@ const _getMusics = async () => {
     }
 
     const media = await MediaLibrary.getAssetsAsync(initStatus);
+
+    console.log(media)
 
     return media;
 }
