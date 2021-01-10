@@ -1,10 +1,10 @@
 import { useState, useReducer, useCallback, useEffect } from "react";
 import constants from "../constants/index";
 
-import * as MediaLibrary from "expo-media-library";
-import TrackPlayer from 'react-native-track-player';
+import TrackPlayer, { Track } from 'react-native-track-player';
 
 import { IAction, IEventState, IMusicTrack } from "./interfaces/index";
+import { useStorageMusic } from "./useStorageMusic";
 
 import { useTrackPlayerProgress, useTrackPlayerEvents } from 'react-native-track-player/lib/index';
 import { 
@@ -16,6 +16,7 @@ import {
     REMOTE_PREVIOUS,
     REMOTE_DUCK
 } from "react-native-track-player/lib/eventTypes";
+import { cos } from "react-native-reanimated";
 
 const initState = {
     shouldPlay: false,
@@ -85,97 +86,52 @@ const reducer = (state : IMusicTrack, action : IAction) => {
     }   
 }
 
-const trackPlayerInit = async () => {
+const trackPlayerInit = async (callback : () => (Array<TrackPlayer.Track> | undefined)) => {
     try {
         await TrackPlayer.setupPlayer();
 
-        const songs : MediaLibrary.PagedInfo<MediaLibrary.Asset> = await _getMusics();
+        const songs = await callback();
 
-        let musicsInfo : Array<TrackPlayer.Track> = [];
+        if(songs) {
+            await TrackPlayer.add(songs);
 
-        songs.assets.forEach(song => {
-            let re = /.flac|.mp3|.wma/g;
+            TrackPlayer.updateOptions({
+                stopWithApp: false,
+                capabilities: [
+                    TrackPlayer.CAPABILITY_PLAY,
+                    TrackPlayer.CAPABILITY_PAUSE,
+                    TrackPlayer.CAPABILITY_SKIP,
+                    TrackPlayer.CAPABILITY_SKIP_TO_NEXT,
+                    TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
+                ]
+            });
 
-            const isFlacOrOgg = re.test(song.filename);
+            return songs[0].id;
 
-            if(!isFlacOrOgg) {
-                musicsInfo.push({
-                    id: song.id,
-                    duration: song.duration,
-                    url: song.uri,
-                    title: song.filename,
-                    album: song.albumId,
-                    artist: 'Unknown',
-                });
-            } 
-        });
-
-        await TrackPlayer.add(musicsInfo);
-
-        TrackPlayer.updateOptions({
-            stopWithApp: false,
-            capabilities: [
-              TrackPlayer.CAPABILITY_PLAY,
-              TrackPlayer.CAPABILITY_PAUSE,
-              TrackPlayer.CAPABILITY_SKIP,
-              TrackPlayer.CAPABILITY_SKIP_TO_NEXT,
-              TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
-            ]
-        });
-
-        return musicsInfo[0].id;
+        }
 
     } catch (error) {
         console.log(error)
     }
 };
 
-const _getMusics = async () => {
-    const initStatus = {
-        first: 1500,
-        mediaType: MediaLibrary.MediaType.audio
-    }
-
-    const media = await MediaLibrary.getAssetsAsync(initStatus);
-
-    return media;
-}
-
 export const useMusic = () => {
 
     const [state, dispatch] = useReducer(reducer, initState);
     const [sliderValue, setSliderValue] = useState(0);
-
+    const { initMusicStorage } = useStorageMusic();
+    
     const { position, duration } = useTrackPlayerProgress(250);
 
     useEffect(() => {
         if(!state.isSeeking && position && duration) {
-            console.log(position)
             setSliderValue(position / duration);
         }
     }, [position, duration]);
 
-    useTrackPlayerEvents(Events, (event : IEventState)  => {
-        console.log(event.type)
-        if (event.type === REMOTE_PLAY)
-            dispatch({
-                type: UPDATE_PLAYING,
-                payload: { isPlaying: true }
-            });
-
-        if(event.type === REMOTE_PAUSE || event.type === REMOTE_DUCK)
-            dispatch({
-                type: UPDATE_PLAYING,
-                payload: { isPlaying: false }
-            });
-
-        if(event.type === REMOTE_PREVIOUS || event.type === REMOTE_NEXT)
-            setCurrentTrack();
-    });
-
     useEffect(() => {
         const initTrack = async () => {
-            const firstTrack = await trackPlayerInit();
+            const firstTrack = await trackPlayerInit(initMusicStorage);
 
             if(firstTrack) {
                 setCurrentTrack();
@@ -194,6 +150,25 @@ export const useMusic = () => {
 
         initTrack();
     }, []);
+
+    useTrackPlayerEvents(Events, (event : IEventState)  => {
+        if (event.type === REMOTE_PLAY)
+            dispatch({
+                type: UPDATE_PLAYING,
+                payload: { isPlaying: true }
+            });
+
+        if(event.type === REMOTE_PAUSE || event.type === REMOTE_DUCK)
+            dispatch({
+                type: UPDATE_PLAYING,
+                payload: { isPlaying: false }
+            });
+
+        if(event.type === REMOTE_PREVIOUS || event.type === REMOTE_NEXT)
+            setCurrentTrack();
+    });
+
+
 
     const slidingStarted = () => {
         dispatch({
@@ -231,7 +206,7 @@ export const useMusic = () => {
     );
 
     const rewind = useCallback(
-        async () => {   
+        async () => {
             const currentTrack = await TrackPlayer.getCurrentTrack();
             if(state.firstTrackId === currentTrack || position > 1.5) {
                 await TrackPlayer.seekTo(0);
