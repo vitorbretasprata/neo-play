@@ -55,7 +55,7 @@ export default function Home(props : any) {
                 HandleBackward={rewind}
                 HandleFastfoward={fastfoward}
                 HandlePlay={HandlePlaySong}
-                isPlaying={state.isPlaying}             
+                isPlaying={state.isPlaying}
                 disabled={!state.isTrackInit}
             />
           </>

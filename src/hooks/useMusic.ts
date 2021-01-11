@@ -1,10 +1,10 @@
 import { useState, useReducer, useCallback, useEffect } from "react";
 import constants from "../constants/index";
 
-import TrackPlayer, { Track } from 'react-native-track-player';
+import * as MediaLibrary from "expo-media-library";
+import TrackPlayer from 'react-native-track-player';
 
 import { IAction, IEventState, IMusicTrack } from "./interfaces/index";
-import { useStorageMusic } from "./useStorageMusic";
 
 import { useTrackPlayerProgress, useTrackPlayerEvents } from 'react-native-track-player/lib/index';
 import { 
@@ -16,7 +16,6 @@ import {
     REMOTE_PREVIOUS,
     REMOTE_DUCK
 } from "react-native-track-player/lib/eventTypes";
-import { cos } from "react-native-reanimated";
 
 const initState = {
     shouldPlay: false,
@@ -31,7 +30,15 @@ const initState = {
     currentTrack: {}
 }
 
-const { UPDATE_PLAYING, UPDATE_BUFFERING, SET_INIT, SET_SEEKING, SET_FIRST_TRACK, SET_CURRENT_TRACK, REMOTE_NEXT } = constants;
+const { 
+    UPDATE_PLAYING, 
+    UPDATE_BUFFERING, 
+    SET_INIT, 
+    SET_SEEKING, 
+    SET_FIRST_TRACK, 
+    SET_CURRENT_TRACK, 
+    REMOTE_NEXT 
+} = constants;
 
 const Events = [
     PLAYBACK_STATE,
@@ -86,11 +93,11 @@ const reducer = (state : IMusicTrack, action : IAction) => {
     }   
 }
 
-const trackPlayerInit = async (callback : () => (Array<TrackPlayer.Track> | undefined)) => {
+const trackPlayerInit = async () => {
     try {
         await TrackPlayer.setupPlayer();
 
-        const songs = await callback();
+        const songs = await initMusicStorage();
 
         if(songs) {
             await TrackPlayer.add(songs);
@@ -115,13 +122,56 @@ const trackPlayerInit = async (callback : () => (Array<TrackPlayer.Track> | unde
     }
 };
 
+export const initMusicStorage = async () => {
+    try {
+        const songs : MediaLibrary.PagedInfo<MediaLibrary.Asset> = await _getMusics();
+
+        let musicsInfo : Array<TrackPlayer.Track> = [];
+
+        songs.assets.forEach(song => {
+            let re = /.flac|.wma/g;
+
+            const isFlacOrOgg = re.test(song.filename);
+
+            if(!isFlacOrOgg) {
+                musicsInfo.push({
+                    id: song.id,
+                    duration: song.duration,
+                    url: song.uri,
+                    title: song.filename,
+                    album: song.albumId,
+                    artist: 'Unknown',
+                });
+            } 
+        });
+
+        return musicsInfo;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const _getMusics = async () => {
+    const initStatus = {
+        first: 1500,
+        mediaType: MediaLibrary.MediaType.audio
+    }
+
+    const media = await MediaLibrary.getAssetsAsync(initStatus);
+
+    return media;
+}
+
 export const useMusic = () => {
 
     const [state, dispatch] = useReducer(reducer, initState);
     const [sliderValue, setSliderValue] = useState(0);
-    const { initMusicStorage } = useStorageMusic();
     
     const { position, duration } = useTrackPlayerProgress(250);
+
+    const switchSong = (id : string) => {
+        TrackPlayer.skip(id);
+    }
 
     useEffect(() => {
         if(!state.isSeeking && position && duration) {
@@ -131,7 +181,7 @@ export const useMusic = () => {
 
     useEffect(() => {
         const initTrack = async () => {
-            const firstTrack = await trackPlayerInit(initMusicStorage);
+            const firstTrack = await trackPlayerInit();
 
             if(firstTrack) {
                 setCurrentTrack();
@@ -152,23 +202,21 @@ export const useMusic = () => {
     }, []);
 
     useTrackPlayerEvents(Events, (event : IEventState)  => {
-        if (event.type === REMOTE_PLAY)
-            dispatch({
-                type: UPDATE_PLAYING,
-                payload: { isPlaying: true }
-            });
-
-        if(event.type === REMOTE_PAUSE || event.type === REMOTE_DUCK)
-            dispatch({
-                type: UPDATE_PLAYING,
-                payload: { isPlaying: false }
-            });
-
-        if(event.type === REMOTE_PREVIOUS || event.type === REMOTE_NEXT)
-            setCurrentTrack();
+        switch(event.type) {
+            case REMOTE_PREVIOUS || REMOTE_NEXT: 
+                setCurrentTrack();
+            case REMOTE_PLAY: 
+                dispatch({
+                    type: UPDATE_PLAYING,
+                    payload: { isPlaying: true }
+                });
+            case REMOTE_PAUSE || REMOTE_DUCK: 
+                dispatch({
+                    type: UPDATE_PLAYING,
+                    payload: { isPlaying: false }
+                });
+        }
     });
-
-
 
     const slidingStarted = () => {
         dispatch({
@@ -233,7 +281,6 @@ export const useMusic = () => {
     const fastfoward = useCallback(
         async () => {
             await TrackPlayer.skipToNext();
-
             setSliderValue(0);
             setCurrentTrack();
         },

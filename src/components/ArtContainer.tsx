@@ -2,9 +2,6 @@ import React, { memo } from 'react';
 import styled from "styled-components/native";
 
 import { Track } from "react-native-track-player";
-
-import NeuMorph from "./NeuMorph";
-
 interface IArtContainer {
     currentTrack: Track
 }
@@ -17,11 +14,11 @@ function ArtContainer({ currentTrack } : IArtContainer) {
             </SongArtContainer>
 
             <SongInfoContainer>
-                <SongArtist numberOfLines={1} ellipsizeMode='head'>
-                    {currentTrack.artist || "Unknown"}
+                <SongArtist numberOfLines={1} ellipsizeMode='tail'>
+                    {currentTrack ? currentTrack.artist : "Unknown"}
                 </SongArtist>
-                <SongName numberOfLines={1} ellipsizeMode='head'>
-                    {currentTrack.title || "Unknown"}
+                <SongName numberOfLines={1} ellipsizeMode='tail'>
+                    {currentTrack ? currentTrack.title : "Unknown"}
                 </SongName>
             </SongInfoContainer>
         </SongContainer>
@@ -52,6 +49,7 @@ const SongArt = styled.Image`
 const SongInfoContainer = styled.View`
     align-items:center;
     margin-top: 32px;
+    padding: 0 16px;
 `;
 
 const SongArtist = styled.Text`

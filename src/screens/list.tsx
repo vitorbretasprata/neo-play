@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useStorageMusic } from "../hooks/useStorageMusic";
-
+import React, { useState, useEffect, useCallback } from 'react';
 import { Track } from "react-native-track-player";
 import { FlatList } from "react-native-gesture-handler";
 
 import MusicComponent from "../components/MusicComponent";
+import { initMusicStorage } from "../hooks/useMusic";
+import HeaderListComponent from "../components/HeaderListComponent";
 
 import { LinearGradient } from "expo-linear-gradient";
-import { View } from 'react-native';
+import { View, ListRenderItem } from 'react-native';
 
-export default function List() {
+export default function List(props : any) {
 
-    const { initMusicStorage } = useStorageMusic(); 
 
-    const [songs, setSongs] = useState<Array<Track>>([]);
+    const [songList, setSongList] = useState<Array<Track>>([]);
 
     useEffect(() => {
       initStorage();
@@ -22,21 +21,19 @@ export default function List() {
     const initStorage = async () => {
       const musics = await initMusicStorage();
 
-      if(musics) {
-        setSongs(musics);
-      }
+      if(musics) setSongList(musics);
+
     }
 
-    const renderMusic = () => <MusicComponent />;
+    const toggleDrawer = useCallback(() => props.navigation.toggleDrawer(), [props.navigation]);
 
 
-    const renderHeader = () => {
-      return (
-        <View style={{ width: "100%", height: 30, borderWidth: 1 }}> 
+    const handleSwitchSong = (id : string) => console.log(id);
 
-        </View>
-      )
-    };
+    const renderMusic = (prop : ListRenderItem<Track>) => <MusicComponent index={prop.index} item={prop.item} onTouch={handleSwitchSong} />;
+
+
+    const renderHeader = () => <HeaderListComponent toggleNavigation={toggleDrawer}/>;
 
     const renderFooter = () => {
       return (
@@ -46,13 +43,8 @@ export default function List() {
       )
     };
 
-    const renderSeparator = () => {
-      return (
-        <View> 
+    const renderSeparator = () =>  <View  style={{ height: 1, width: "100%", backgroundColor: "#707070" }}/>;
 
-        </View>
-      )
-    };
 
     const renderEmpty = () => {
       return (
@@ -70,13 +62,13 @@ export default function List() {
       >
 
         <FlatList 
-          data={songs}
+          data={songList}
           renderItem={renderMusic}
           ListHeaderComponent={renderHeader}
           ListFooterComponent={renderFooter}
           ItemSeparatorComponent={renderSeparator}
           ListEmptyComponent={renderEmpty}
-
+          invertStickyHeaders={true}
 
         />
       </LinearGradient>
