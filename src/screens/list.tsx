@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Track } from "react-native-track-player";
 import { FlatList } from "react-native-gesture-handler";
 
+import TrackPlayer from "react-native-track-player";
+
 import MusicComponent from "../components/MusicComponent";
 import { initMusicStorage } from "../hooks/useMusic";
 import HeaderListComponent from "../components/HeaderListComponent";
@@ -9,10 +11,27 @@ import HeaderListComponent from "../components/HeaderListComponent";
 import { LinearGradient } from "expo-linear-gradient";
 import { View, ListRenderItem } from 'react-native';
 
+interface ITrackElement {
+  item: Track,
+  index: number
+}
+
 export default function List(props : any) {
-
-
     const [songList, setSongList] = useState<Array<Track>>([]);
+
+    const switchSong = (id : string) => {
+      TrackPlayer.stop()
+          .then(async () => {
+              const currentSong = await TrackPlayer.getCurrentTrack();
+              if(currentSong == id) {
+                  TrackPlayer.seekTo(0);
+              } else {
+                  TrackPlayer.skip(id);
+              }
+          }).finally(() => {
+              TrackPlayer.play();
+          });
+    }
 
     useEffect(() => {
       initStorage();
@@ -27,10 +46,7 @@ export default function List(props : any) {
 
     const toggleDrawer = useCallback(() => props.navigation.toggleDrawer(), [props.navigation]);
 
-
-    const handleSwitchSong = (id : string) => console.log(id);
-
-    const renderMusic = (prop : ListRenderItem<Track>) => <MusicComponent index={prop.index} item={prop.item} onTouch={handleSwitchSong} />;
+    const renderMusic = ({ index, item } : ITrackElement) => <MusicComponent index={index} item={item} onTouch={switchSong} />;
 
 
     const renderHeader = () => <HeaderListComponent toggleNavigation={toggleDrawer}/>;

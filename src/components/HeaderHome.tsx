@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { View, Text, StatusBar } from "react-native";
 import styled from "styled-components/native";
 import Entypo from "react-native-vector-icons/Entypo";
@@ -37,7 +37,7 @@ function HeaderHome({ toggleNavigation } : INavigation) {
     );
 }
 
-export default memo(HeaderHome);
+export default HeaderHome;
 
 const MarginSpace = styled.View`    
     margin: ${props => (currentHeight || 24)  + 32}px 32px 0 32px;

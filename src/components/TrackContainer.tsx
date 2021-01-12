@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled from "styled-components/native";
 import { Text } from "react-native";
 
@@ -36,7 +36,7 @@ function Track({ slidingStarted, slidingCompleted, sliderValue, currentTime, son
     );
 }
 
-export default memo(Track);
+export default Track;
 
 const StyledSlider = styled(Slider)`
     width: 100%;

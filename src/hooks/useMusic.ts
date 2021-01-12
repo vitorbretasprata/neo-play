@@ -14,7 +14,8 @@ import {
     REMOTE_SEEK, 
     REMOTE_SKIP, 
     REMOTE_PREVIOUS,
-    REMOTE_DUCK
+    REMOTE_DUCK,
+    PLAYBACK_TRACK_CHANGED
 } from "react-native-track-player/lib/eventTypes";
 
 const initState = {
@@ -37,7 +38,7 @@ const {
     SET_SEEKING, 
     SET_FIRST_TRACK, 
     SET_CURRENT_TRACK, 
-    REMOTE_NEXT 
+    REMOTE_NEXT
 } = constants;
 
 const Events = [
@@ -48,6 +49,7 @@ const Events = [
     REMOTE_SKIP,
     REMOTE_DUCK,
     REMOTE_PREVIOUS,
+    PLAYBACK_TRACK_CHANGED
 ];
 
 const reducer = (state : IMusicTrack, action : IAction) => {
@@ -169,10 +171,6 @@ export const useMusic = () => {
     
     const { position, duration } = useTrackPlayerProgress(250);
 
-    const switchSong = (id : string) => {
-        TrackPlayer.skip(id);
-    }
-
     useEffect(() => {
         if(!state.isSeeking && position && duration) {
             setSliderValue(position / duration);
@@ -203,7 +201,7 @@ export const useMusic = () => {
 
     useTrackPlayerEvents(Events, (event : IEventState)  => {
         switch(event.type) {
-            case REMOTE_PREVIOUS || REMOTE_NEXT: 
+            case REMOTE_PREVIOUS || REMOTE_NEXT || PLAYBACK_TRACK_CHANGED: 
                 setCurrentTrack();
             case REMOTE_PLAY: 
                 dispatch({
@@ -296,6 +294,6 @@ export const useMusic = () => {
         slidingCompleted, 
         sliderValue, 
         duration, 
-        position
+        position,
     };
 }
