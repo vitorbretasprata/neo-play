@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 
 import styled from "styled-components/native";
-import Animated from "react-native-reanimated";
 import { Track } from 'react-native-track-player';
 import { BaseButton } from "react-native-gesture-handler";
-import { Alert } from 'react-native';
-
 interface SongInfo {
     index: number,
     item: Track,

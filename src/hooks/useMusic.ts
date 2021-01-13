@@ -14,8 +14,7 @@ import {
     REMOTE_SEEK, 
     REMOTE_SKIP, 
     REMOTE_PREVIOUS,
-    REMOTE_DUCK,
-    PLAYBACK_TRACK_CHANGED
+    REMOTE_DUCK
 } from "react-native-track-player/lib/eventTypes";
 
 const initState = {
@@ -48,8 +47,7 @@ const Events = [
     REMOTE_SEEK,
     REMOTE_SKIP,
     REMOTE_DUCK,
-    REMOTE_PREVIOUS,
-    PLAYBACK_TRACK_CHANGED
+    REMOTE_PREVIOUS
 ];
 
 const reducer = (state : IMusicTrack, action : IAction) => {
@@ -201,7 +199,7 @@ export const useMusic = () => {
 
     useTrackPlayerEvents(Events, (event : IEventState)  => {
         switch(event.type) {
-            case REMOTE_PREVIOUS || REMOTE_NEXT || PLAYBACK_TRACK_CHANGED: 
+            case REMOTE_PREVIOUS || REMOTE_NEXT: 
                 setCurrentTrack();
             case REMOTE_PLAY: 
                 dispatch({
@@ -265,6 +263,15 @@ export const useMusic = () => {
         [state.firstTrackId]
     );
 
+    const fastfoward = useCallback(
+        async () => {
+            await TrackPlayer.skipToNext();
+            setSliderValue(0);
+            setCurrentTrack();
+        },
+        []
+    );
+
     const setCurrentTrack = async () => {
         const currentId = await TrackPlayer.getCurrentTrack();
 
@@ -275,15 +282,6 @@ export const useMusic = () => {
             payload: { currentTrack: currentTrack }
         });
     }
-
-    const fastfoward = useCallback(
-        async () => {
-            await TrackPlayer.skipToNext();
-            setSliderValue(0);
-            setCurrentTrack();
-        },
-        []
-    );
 
     return { 
         state, 

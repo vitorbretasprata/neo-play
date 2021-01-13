@@ -10,8 +10,6 @@ import { LinearGradient } from "expo-linear-gradient";
 
 export default function Home(props : any) {
 
-    console.log("Home");
-
     const [loadingScreen, setLoadingScreen] = useState(true);
 
     const { 
@@ -62,7 +60,6 @@ export default function Home(props : any) {
             />
           </>
         )}
-          
       </LinearGradient>
     );
 }

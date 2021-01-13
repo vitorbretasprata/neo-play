@@ -6,7 +6,7 @@ interface IArtContainer {
     currentTrack: Track
 }
 
-function ArtContainer({ currentTrack } : IArtContainer) {
+const ArtContainer : React.FC<IArtContainer> = ({ currentTrack }) => {
     return (
         <SongContainer>
             <SongArtContainer>

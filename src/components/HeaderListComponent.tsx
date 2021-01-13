@@ -3,16 +3,14 @@ import styled from "styled-components/native";
 import Entypo from "react-native-vector-icons/Entypo";
 
 import { BaseButton } from "react-native-gesture-handler";
-import { GlobalStyles } from "../screens/global/styles";
-
 interface INavigation {
     toggleNavigation: Function
 }
 
-function HeaderListComponent({ toggleNavigation } : INavigation) {
+const HeaderListComponent : React.FC<INavigation> = ({ toggleNavigation }) => {
 
     const handleNavigation = () => toggleNavigation();
-    
+
     return (
         <MarginSpace>
             <TopContainer>

@@ -12,7 +12,11 @@ import Animated, { interpolate, useSharedValue, useAnimatedStyle } from "react-n
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
-const Screens = ({ navigation, style } : any) => {
+interface IScreens {
+    style: object
+}
+
+const Screens : React.FC<IScreens> = ({ style }) => {
     return (
         <Animated.View style={
             [

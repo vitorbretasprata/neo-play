@@ -14,7 +14,7 @@ interface ITrack {
     currentTime: number
 }
 
-function Track({ slidingStarted, slidingCompleted, sliderValue, currentTime, songTime } : ITrack) {
+const Track : React.FC<ITrack> = ({ slidingStarted, slidingCompleted, sliderValue, currentTime, songTime }) => {
 
     return (
         <TrackContainer>

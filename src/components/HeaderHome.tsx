@@ -12,10 +12,10 @@ interface INavigation {
     toggleNavigation: Function
 }
 
-function HeaderHome({ toggleNavigation } : INavigation) {
+const HeaderHome : React.FC<INavigation> = ({ toggleNavigation }) => {
 
     const handleNavigation = () => toggleNavigation();
-    
+
     return (
         <MarginSpace>
             <TopContainer>

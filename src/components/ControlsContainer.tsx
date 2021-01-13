@@ -14,7 +14,7 @@ interface IControls {
     HandleFastfoward: (Event : GestureResponderEvent) => void
 }
 
-function Controls({ HandlePlay, HandleBackward, HandleFastfoward, isPlaying, disabled } : IControls) {
+const Controls : React.FC<IControls> = ({ HandlePlay, HandleBackward, HandleFastfoward, isPlaying, disabled }) => {
 
     return (
         <ControlsContainer>
