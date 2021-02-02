@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import styled from "styled-components/native";
 import { Track } from 'react-native-track-player';
-import { BaseButton } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native";
 
 interface SongInfo {
     index: number,
@@ -12,14 +12,14 @@ interface SongInfo {
 
 const MusicComponent : React.FC<SongInfo> = ({ index, item, onTouch }) => {
 
-    const handlePress = () => console.log(index);
+    const handlePress = () => onTouch(item);
 
     return (
-        <BaseButton onPress={handlePress}>
+        <TouchableOpacity onPress={handlePress}>
             <MusicContainer accessible>
                 <Text numberOfLines={1} ellipsizeMode="tail">{item.title}</Text>
             </MusicContainer>
-        </BaseButton>
+        </TouchableOpacity>
     );
 }
 

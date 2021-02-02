@@ -12,7 +12,6 @@ import {
     REMOTE_DUCK
 } from "react-native-track-player/lib/eventTypes";
 
-
 interface PlayerTrackContext {
     isPlaying: boolean,
     isPaused: boolean,
@@ -20,10 +19,10 @@ interface PlayerTrackContext {
     isEmpty: boolean,
     currentTrack: Track | null,
     previous: () => void,
-    switchSong: (id  : string) => void,
+    switchSong: (item  : Track) => void,
     slidingCompleted: (value : number) => void,
     next: () => void,
-    play: (track? : Track) => void,
+    play: () => void,
     pause: () => void;
 }
 
@@ -49,11 +48,12 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
     const [currentTrack, setCurrentTrack] = useState<null | Track>(null);
 
     const { position, duration } = useTrackPlayerProgress(250);
-    
+
     useEffect(() => {
         const listener = TrackPlayer.addEventListener(
             "playback-state", 
             ({ state } : { state: TrackState}) => {
+                console.log(state)
                 setPlayerState(state);
             }
         );
@@ -64,14 +64,7 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
     }, []);
 
 
-    const play = async (track? : Track) => {
-        if(track) {
-            await TrackPlayer.add(track);
-            setCurrentTrack(track);
-        }
-
-        await TrackPlayer.play();
-    }
+    const play = async () =>  await TrackPlayer.play();
 
     const slidingCompleted = async (value : number) => {
         await TrackPlayer.seekTo(value * duration);
@@ -97,19 +90,30 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
         []
     );
 
-    const switchSong = (id : string) => {
-        console.log(id)
+    const switchSong = async (song : Track) => {
+        if(!currentTrack) {
+            TrackPlayer.skip(song.id)
+                .then(async () => {
+                    await TrackPlayer.play();
+                }).finally(() => {
+                    setCurrentTrack(song);
+                });          
+
+            return;
+        }
+
         TrackPlayer.stop()
             .then(async () => {
                 const currentSong = await TrackPlayer.getCurrentTrack();
-                if(currentSong == id) {
-                    TrackPlayer.seekTo(0);
+                if(currentSong == song.id) {
+                    await TrackPlayer.seekTo(0);
                 } else {
-                    TrackPlayer.skip(id);
+                    setCurrentTrack(song);
+                    await TrackPlayer.skip(song.id);
                 }
             }).finally(() => {
                 TrackPlayer.play();
-        });
+        });        
     }
 
     const next = async () => await TrackPlayer.skipToNext();

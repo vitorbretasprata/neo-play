@@ -14,15 +14,7 @@ const MiniPlayer : React.FC = () => {
 
     const imgUrl = values.currentTrack?.artwork ? { uri: values.currentTrack.artwork } : require("../assets/images/disc-icon.png");
 
-    const handlePlay = () => {
-        if(values.isPlaying) {
-            values.pause();
-        } else {
-            values.play();
-        }
-    }
-
-    if(!values.currentTrack) {
+    if(values.isEmpty || !values.currentTrack) {
         return null;
     }
 
@@ -37,28 +29,30 @@ const MiniPlayer : React.FC = () => {
 
             <MusicTextContainer>
                 <TextName>
-                    Title
+                    {values.currentTrack?.title}
                 </TextName>
-                <TextArtist>
-                    Album
-                </TextArtist>
             </MusicTextContainer>
 
             <IconContainer>
-                <TouchableWithoutFeedback onPress={handlePlay}>
-                    {
-                    values.isPlaying ? 
+                {values.isPlaying && (
+                    <TouchableWithoutFeedback onPress={values.pause}>
                         <Entypo 
                             name="controller-paus" 
                             size={32} 
-                        /> 
-                    : 
+                        />
+                        
+                    </TouchableWithoutFeedback>
+                )}
+
+                {!values.isPlaying && (
+                    <TouchableWithoutFeedback onPress={values.play}>
                         <Entypo 
                             name="controller-play" 
                             size={32} 
                         />
-                    }
-                </TouchableWithoutFeedback>
+                    </TouchableWithoutFeedback>
+                )}                            
+                
             </IconContainer>
             
         </MiniPlayerContainer>
@@ -81,18 +75,13 @@ const ImageContainer = styled.View`
 
 const MusicTextContainer = styled.View`
     width: 200px;
-    justify-content: space-between;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `;
 
 const TextName = styled.Text`
     font-size: 18px;
     margin-bottom: 5px;
-`;
-
-const TextArtist = styled.Text`
-    width: 100%;
-    height: 55px;
 `;
 
 const IconContainer = styled.View`

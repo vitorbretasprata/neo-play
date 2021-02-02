@@ -61,12 +61,9 @@ const _getMusics = async () => {
 export default function List(props : any) {
     const [songList, setSongList] = useState<Array<Track>>([]);
 
-    const values = usePlayerContext()
+    const values = usePlayerContext();
 
-    const switchSong = (id : string) => {
-      console.log(id)
-      values.switchSong(id);      
-    }
+    const switchSong = (song : Track) => values.switchSong(song);
 
     useEffect(() => {
       initStorage();
