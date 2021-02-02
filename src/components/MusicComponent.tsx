@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import styled from "styled-components/native";
 import { Track } from 'react-native-track-player';
 import { BaseButton } from "react-native-gesture-handler";
+
 interface SongInfo {
     index: number,
     item: Track,
@@ -11,7 +12,7 @@ interface SongInfo {
 
 const MusicComponent : React.FC<SongInfo> = ({ index, item, onTouch }) => {
 
-    const handlePress = () => onTouch(item.id);
+    const handlePress = () => console.log(index);
 
     return (
         <BaseButton onPress={handlePress}>

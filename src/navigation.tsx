@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { PlayerContextProvider } from "./context/RNPlayerTrackContext";
 
+import { createStackNavigator } from "@react-navigation/stack";
+
 import * as MediaLibrary from "expo-media-library";
 import TrackPlayer from 'react-native-track-player';
 
-import Drawer from "./components/Drawer";
+import BottomTabs from "./components/BottomNavigator";
 
 const NavigationOptions = {
   headerShown: false 
@@ -89,19 +91,7 @@ export default function Navigation() {
 
             if(firstTrack) {
                 setCurrentTrack();
-
-                /**
-                 *  
-                dispatch({
-                    type: SET_INIT,
-                    payload: { isTrackInit: true }
-                });
-
-                dispatch({
-                    type: SET_FIRST_TRACK,
-                    payload: { firstTrackId: firstTrack }
-                });
-                */  
+                  
                 setReady(true);             
             }
         }
@@ -112,23 +102,14 @@ export default function Navigation() {
     const setCurrentTrack = async () => {
         const currentId = await TrackPlayer.getCurrentTrack();
 
-        const currentTrack = await TrackPlayer.getTrack(currentId);
-
-        /**
-         * 
-         * dispatch({
-            type: SET_CURRENT_TRACK,
-            payload: { currentTrack: currentTrack }
-        });
-        */
-      
+        const currentTrack = await TrackPlayer.getTrack(currentId);     
     }
 
     return (
       <PlayerContextProvider>
         {ready && (
           <NavigationContainer>
-            <Drawer />
+            <BottomTabs />
           </NavigationContainer>
         )}        
       </PlayerContextProvider>

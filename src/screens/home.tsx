@@ -1,21 +1,27 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 import HeaderHome from "../components/HeaderHome";
 import ArtContainer from "../components/ArtContainer";
 import Track from "../components/TrackContainer";
 import Controls from "../components/ControlsContainer";
-import { useMusic } from "../hooks/useMusic";
+import { usePlayerContext } from "../context/RNPlayerTrackContext";
 
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function Home(props : any) {
 
-    const [loadingScreen, setLoadingScreen] = useState(true);
+    const value = usePlayerContext();
 
-    useEffect(() => {
-        setLoadingScreen(false);
-      
-    }, []);
+    const handlePlay = () => {
+      if(value.isPlaying) {
+        value.pause();
+      } else {
+        value.play();
+      }
+    }
+
+    const handleNext = () => value.next();
+    const handlePrevious = () => value.previous();
 
     const toggleDrawer = useCallback(() => props.navigation.toggleDrawer(), [props.navigation]);
 
@@ -25,28 +31,24 @@ export default function Home(props : any) {
         start={[0.1, 0.2]}
         style={{ flex: 1 }}
       >
-        {!loadingScreen && (
-          <>
-            <HeaderHome toggleNavigation={toggleDrawer}/>
-            <ArtContainer
-              currentTrack={{}}
-            />
-            <Track
-              slidingStarted={() => {}}
-              slidingCompleted={() => {}}
-              sliderValue={0}
-              currentTime={0}
-              songTime={0}
-            />
-            <Controls
-                HandleBackward={() => {}}
-                HandleFastfoward={() => {}}
-                HandlePlay={() => {}}
-                isPlaying={false}
-                disabled={false}
-            />
-          </>
-        )}
+        <HeaderHome toggleNavigation={toggleDrawer}/>
+        <ArtContainer
+          currentTrack={value.currentTrack}
+        />
+        <Track
+          slidingStarted={() => {}}
+          slidingCompleted={() => {}}
+          sliderValue={0}
+          currentTime={0}
+          songTime={0}
+        />
+        <Controls
+            HandleBackward={handlePrevious}
+            HandleFastfoward={handleNext}
+            HandlePlay={handlePlay}
+            isPlaying={value.isPlaying}
+            disabled={false}
+        />
       </LinearGradient>
     );
 }
