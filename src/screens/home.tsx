@@ -12,23 +12,10 @@ export default function Home(props : any) {
 
     const [loadingScreen, setLoadingScreen] = useState(true);
 
-    const { 
-      state, 
-      fastfoward, 
-      rewind,  
-      HandlePlaySong, 
-      slidingStarted, 
-      slidingCompleted, 
-      sliderValue,
-      duration, 
-      position
-    } = useMusic();
-
     useEffect(() => {
-      if(state.currentTrack != {} && loadingScreen) {
         setLoadingScreen(false);
-      }
-    }, [state]);
+      
+    }, []);
 
     const toggleDrawer = useCallback(() => props.navigation.toggleDrawer(), [props.navigation]);
 
@@ -42,21 +29,21 @@ export default function Home(props : any) {
           <>
             <HeaderHome toggleNavigation={toggleDrawer}/>
             <ArtContainer
-              currentTrack={state.currentTrack}
+              currentTrack={{}}
             />
             <Track
-              slidingStarted={slidingStarted}
-              slidingCompleted={slidingCompleted}
-              sliderValue={sliderValue}
-              currentTime={position}
-              songTime={duration}
+              slidingStarted={() => {}}
+              slidingCompleted={() => {}}
+              sliderValue={0}
+              currentTime={0}
+              songTime={0}
             />
             <Controls
-                HandleBackward={rewind}
-                HandleFastfoward={fastfoward}
-                HandlePlay={HandlePlaySong}
-                isPlaying={state.isPlaying}
-                disabled={!state.isTrackInit}
+                HandleBackward={() => {}}
+                HandleFastfoward={() => {}}
+                HandlePlay={() => {}}
+                isPlaying={false}
+                disabled={false}
             />
           </>
         )}

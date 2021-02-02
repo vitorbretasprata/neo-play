@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 
 import { Track } from "react-native-track-player";
 interface IArtContainer {
-    currentTrack: Track
+    currentTrack: any
 }
 
 const ArtContainer : React.FC<IArtContainer> = ({ currentTrack }) => {
