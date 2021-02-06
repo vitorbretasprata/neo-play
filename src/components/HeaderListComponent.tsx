@@ -4,24 +4,15 @@ import Entypo from "react-native-vector-icons/Entypo";
 
 import { BaseButton } from "react-native-gesture-handler";
 interface INavigation {
-    toggleNavigation: Function
 }
 
-const HeaderListComponent : React.FC<INavigation> = ({ toggleNavigation }) => {
-
-    const handleNavigation = () => toggleNavigation();
+const HeaderListComponent : React.FC<INavigation> = () => {
 
     return (
         <MarginSpace>
             <TopContainer>
-                <BaseButton onPress={handleNavigation}>
-                    <BtnAccessible accessible>
-                        <Entypo 
-                            style={{ color: "#fff" }}
-                            name="menu" 
-                            size={32} 
-                        />
-                    </BtnAccessible>
+                <BaseButton>
+                    
                 </BaseButton>
             </TopContainer>
         </MarginSpace>

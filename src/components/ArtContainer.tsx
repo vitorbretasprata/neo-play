@@ -10,7 +10,7 @@ const ArtContainer : React.FC<IArtContainer> = ({ currentTrack }) => {
     return (
         <SongContainer>
             <SongArtContainer>
-                <SongArt source={require("../assets/images/album.jpeg")} />
+                <SongArt source={require("../assets/images/disc-icon.png")} />
             </SongArtContainer>
 
             <SongInfoContainer>

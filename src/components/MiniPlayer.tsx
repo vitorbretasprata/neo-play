@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components/native";
 
-import { Image } from "react-native";
+import { Image, TouchableWithoutFeedback } from "react-native";
 
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import Entypo from "react-native-vector-icons/Entypo";
 
 import { usePlayerContext } from "../context/RNPlayerTrackContext";
@@ -45,7 +44,7 @@ const MiniPlayer : React.FC = () => {
                 )}
 
                 {!values.isPlaying && (
-                    <TouchableWithoutFeedback onPress={values.play}>
+                    <TouchableWithoutFeedback onPress={() => values.play()}>
                         <Entypo 
                             name="controller-play" 
                             size={32} 

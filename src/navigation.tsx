@@ -29,11 +29,6 @@ export default function Navigation() {
         initTrack();
     }, []);
 
-    const setCurrentTrack = async () => {
-        const currentId = await TrackPlayer.getCurrentTrack();
-        const currentTrack = await TrackPlayer.getTrack(currentId);     
-    }
-
     return (
       <PlayerContextProvider>
         {ready && (
