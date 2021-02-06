@@ -7,38 +7,70 @@ import TrackPlayer from "react-native-track-player";
 import MusicComponent from "../components/MusicComponent";
 import HeaderListComponent from "../components/HeaderListComponent";
 
+import * as MediaLibrary from "expo-media-library";
+
 import { LinearGradient } from "expo-linear-gradient";
-import { View, ListRenderItem } from 'react-native';
+import { View } from 'react-native';
+import { usePlayerContext } from '../context/RNPlayerTrackContext';
 
 interface ITrackElement {
   item: Track,
   index: number
 }
 
+export const initMusicStorage = async () => {
+  try {
+      const songs : MediaLibrary.PagedInfo<MediaLibrary.Asset> = await _getMusics();
+
+      let musicsInfo : Array<TrackPlayer.Track> = [];
+
+      songs.assets.forEach(song => {
+          let re = /.flac|.wma/g;
+
+          const isFlacOrOgg = re.test(song.filename);
+
+          if(!isFlacOrOgg) {
+              musicsInfo.push({
+                  id: song.id,
+                  duration: song.duration,
+                  url: song.uri,
+                  title: song.filename,
+                  album: song.albumId,
+                  artist: 'Unknown',
+              });
+          } 
+      });
+
+      return musicsInfo;
+  } catch (error) {
+      console.log(error);
+  }
+};
+
+const _getMusics = async () => {
+  const initStatus = {
+      first: 1500,
+      mediaType: MediaLibrary.MediaType.audio
+  }
+
+  const media = await MediaLibrary.getAssetsAsync(initStatus);
+
+  return media;
+}
+
 export default function List(props : any) {
     const [songList, setSongList] = useState<Array<Track>>([]);
 
-    const switchSong = (id : string) => {
-      TrackPlayer.stop()
-          .then(async () => {
-              const currentSong = await TrackPlayer.getCurrentTrack();
-              if(currentSong == id) {
-                  TrackPlayer.seekTo(0);
-              } else {
-                  TrackPlayer.skip(id);
-              }
-          }).finally(() => {
-              TrackPlayer.play();
-          });
-    }
+    const values = usePlayerContext();
+
+    const switchSong = (song : Track) => values.switchSong(song);
 
     useEffect(() => {
       initStorage();
     }, [])
 
     const initStorage = async () => {
-      const musics = null;
-
+      const musics = await initMusicStorage();
       if(musics) setSongList(musics);
 
     }
@@ -46,7 +78,6 @@ export default function List(props : any) {
     const toggleDrawer = useCallback(() => props.navigation.toggleDrawer(), [props.navigation]);
 
     const renderMusic = ({ index, item } : ITrackElement) => <MusicComponent index={index} item={item} onTouch={switchSong} />;
-
 
     const renderHeader = () => <HeaderListComponent toggleNavigation={toggleDrawer}/>;
 
@@ -84,7 +115,6 @@ export default function List(props : any) {
           ItemSeparatorComponent={renderSeparator}
           ListEmptyComponent={renderEmpty}
           invertStickyHeaders={true}
-
         />
       </LinearGradient>
     );

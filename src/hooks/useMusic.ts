@@ -155,33 +155,11 @@ export const useMusic = () => {
         [dispatch, state],
     );
 
-    const rewind = useCallback(
-        async () => {
-            const currentTrack = await TrackPlayer.getCurrentTrack();
-            if(state.firstTrackId === currentTrack || position > 1.5) {
-                await TrackPlayer.seekTo(0);
-            } else {
-                await TrackPlayer.skipToPrevious();
-            }
-            setSliderValue(0);
-            setCurrentTrack();
-        },
-        [state.firstTrackId]
-    );
-
-    const fastfoward = useCallback(
-        async () => {
-            await TrackPlayer.skipToNext();
-            setSliderValue(0);
-            setCurrentTrack();
-        },
-        []
-    );
+    
 
     return { 
-        state, 
-        rewind, 
-        fastfoward, 
+        state,
+       
         HandlePlaySong, 
         slidingStarted, 
         slidingCompleted, 
