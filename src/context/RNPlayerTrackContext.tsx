@@ -21,10 +21,9 @@ export const PlayerTrackContext = React.createContext<PlayerTrackContext>({
     pause: () => null
 });
 
-export const PlayerContextProvider: React.FC<PlayerTrackContext> = (props : PropsWithChildren<any>) => {
+export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) => {
 
     const [playerState, setPlayerState] = useState<null | TrackState>(null);
-
     const [currentTrack, setCurrentTrack] = useState<null | Track>(null);
 
     useEffect(() => {

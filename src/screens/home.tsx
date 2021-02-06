@@ -4,7 +4,6 @@ import HeaderHome from "../components/HeaderHome";
 import ArtContainer from "../components/ArtContainer";
 import Track from "../components/TrackContainer";
 import Controls from "../components/ControlsContainer";
-import { useMusic } from "../hooks/useMusic";
 
 import { LinearGradient } from "expo-linear-gradient";
 

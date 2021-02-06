@@ -17,6 +17,14 @@ module.exports = async function() {
     TrackPlayer.addEventListener('remote-duck', () => {
         TrackPlayer.pause();
     });
+
+    TrackPlayer.addEventListener("playback-track-changed", () => {
+
+    });
+
+    TrackPlayer.addEventListener("playback-state", (state) => {
+        console.log(state)
+    });
     
     TrackPlayer.addEventListener('remote-previous', async () => {
         const position = await TrackPlayer.getPosition();

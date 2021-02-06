@@ -5,7 +5,6 @@ import { FlatList } from "react-native-gesture-handler";
 import TrackPlayer from "react-native-track-player";
 
 import MusicComponent from "../components/MusicComponent";
-import { initMusicStorage } from "../hooks/useMusic";
 import HeaderListComponent from "../components/HeaderListComponent";
 
 import { LinearGradient } from "expo-linear-gradient";
@@ -38,7 +37,7 @@ export default function List(props : any) {
     }, [])
 
     const initStorage = async () => {
-      const musics = await initMusicStorage();
+      const musics = null;
 
       if(musics) setSongList(musics);
 
