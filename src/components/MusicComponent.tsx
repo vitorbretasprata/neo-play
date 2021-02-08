@@ -9,14 +9,14 @@ import { TouchableOpacity } from "react-native";
 interface SongInfo {
     index: number,
     item: Track,
+    onTouch: (item : Track) => void
 }
 
-const MusicComponent : React.FC<SongInfo> = ({ index, item }) => {
+const MusicComponent : React.FC<SongInfo> = ({ index, item, onTouch }) => {
 
-    const switchSong = () => values.switchSong(item);
-    const values = usePlayerContext();
+    const switchSong = () => onTouch(item);
 
-    console.log(values);
+    console.log(index);
 
     return (
         <TouchableOpacity onPress={switchSong}>

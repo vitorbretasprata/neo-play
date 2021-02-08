@@ -37,7 +37,6 @@ export const PlayerTrackContext = React.createContext<PlayerTrackContext>({
 export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) => {
 
     const [playerState, setPlayerState] = useState<null | TrackState>(null);
-    const [sliderValue, setSliderValue] = useState(0);
 
     const [currentTrack, setCurrentTrack] = useState<null | Track>(null);
 
@@ -55,24 +54,22 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
         [PlayerTrackContext]
     ); 
 
-    const switchSong = useCallback(
-        async (song : Track) => {
-            if(!currentTrack) {
-                setCurrentTrack(song);
-                await TrackPlayer.add(song);
-                await TrackPlayer.play();                        
-
-                return;                        
-            }
-
-            await TrackPlayer.add(song);
+    const switchSong = async (song : Track) => {
+        if(!currentTrack) {
             setCurrentTrack(song);
-            await TrackPlayer.skip(song.id);
+            await TrackPlayer.add(song);
             await TrackPlayer.play();                        
 
-        }, 
-        []
-    ); 
+            return;                        
+        }
+
+        await TrackPlayer.add(song);
+        await TrackPlayer.stop();
+        setCurrentTrack(song);
+        await TrackPlayer.skip(song.id);
+        await TrackPlayer.play();                        
+
+    } 
 
     const pause = useCallback(
         async () => {

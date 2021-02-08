@@ -4,6 +4,7 @@ import { FlatList } from "react-native-gesture-handler";
 
 import MusicComponent from "../components/MusicComponent";
 import HeaderListComponent from "../components/HeaderListComponent";
+import { usePlayerContext } from '../context/RNPlayerTrackContext';
 
 import { LinearGradient } from "expo-linear-gradient";
 import { View } from 'react-native';
@@ -19,15 +20,21 @@ export default function List() {
 
     useEffect(() => {
       initStorage();
-    }, [])
+    }, []);
+
+    const values = usePlayerContext();
 
     const initStorage = async () => {
       const musics = await initMusicStorage();
       if(musics) setSongList(musics);
-
     }
 
-    const renderMusic = ({ index, item } : ITrackElement) => <MusicComponent index={index} item={item} />;
+    const switchSong = useCallback(
+      (track : Track) => values.switchSong(track), 
+      []
+    );
+
+    const renderMusic = ({ index, item } : ITrackElement) => <MusicComponent index={index} item={item} onTouch={switchSong} />;
     const renderHeader = () => <HeaderListComponent />;
 
     const renderFooter = () => {
