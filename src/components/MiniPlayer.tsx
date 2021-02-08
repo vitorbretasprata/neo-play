@@ -4,7 +4,6 @@ import styled from "styled-components/native";
 import { Image, TouchableWithoutFeedback } from "react-native";
 
 import Entypo from "react-native-vector-icons/Entypo";
-
 import { usePlayerContext } from "../context/RNPlayerTrackContext";
 
 const MiniPlayer : React.FC = () => {
@@ -17,6 +16,8 @@ const MiniPlayer : React.FC = () => {
         return null;
     }
 
+    console.log("Mini player")
+    
     return (
         <MiniPlayerContainer>
             <ImageContainer>
@@ -27,7 +28,7 @@ const MiniPlayer : React.FC = () => {
             </ImageContainer>
 
             <MusicTextContainer>
-                <TextName>
+                <TextName numberOfLines={1} ellipsizeMode='tail'>
                     {values.currentTrack?.title}
                 </TextName>
             </MusicTextContainer>
@@ -75,7 +76,7 @@ const ImageContainer = styled.View`
 const MusicTextContainer = styled.View`
     width: 200px;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 `;
 
 const TextName = styled.Text`

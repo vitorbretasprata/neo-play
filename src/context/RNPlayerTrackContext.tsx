@@ -1,16 +1,8 @@
 import React, { PropsWithChildren, useState, useCallback } from "react";
 import TrackPlayer, { State as TrackState, STATE_NONE, STATE_PAUSED, STATE_PLAYING, STATE_STOPPED, Track } from "react-native-track-player";
 
-import { useTrackPlayerProgress, useTrackPlayerEvents } from 'react-native-track-player/lib/index';
-import { 
-    PLAYBACK_STATE, 
-    REMOTE_PAUSE, 
-    REMOTE_PLAY, 
-    REMOTE_SEEK, 
-    REMOTE_SKIP, 
-    REMOTE_PREVIOUS,
-    REMOTE_DUCK
-} from "react-native-track-player/lib/eventTypes";
+import { useTrackPlayerEvents } from 'react-native-track-player/lib/index';
+
 
 interface PlayerTrackContext {
     isPlaying: boolean,
@@ -40,7 +32,6 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
 
     const [currentTrack, setCurrentTrack] = useState<null | Track>(null);
 
-
     useTrackPlayerEvents(['playback-state'], 
         (event: any) => {
             setPlayerState(event.state);
@@ -51,25 +42,27 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
         async (track? : Track) =>  {
             await TrackPlayer.play();
         }, 
-        [PlayerTrackContext]
-    ); 
+        []
+    );
 
-    const switchSong = async (song : Track) => {
-        if(!currentTrack) {
-            setCurrentTrack(song);
+    const switchSong = useCallback(
+        async (song : Track) => {
+            if(!currentTrack) {
+                setCurrentTrack(song);
+                await TrackPlayer.add(song);
+                await TrackPlayer.play();                        
+
+                return;                        
+            }
+
             await TrackPlayer.add(song);
-            await TrackPlayer.play();                        
-
-            return;                        
-        }
-
-        await TrackPlayer.add(song);
-        await TrackPlayer.stop();
-        setCurrentTrack(song);
-        await TrackPlayer.skip(song.id);
-        await TrackPlayer.play();                        
-
-    } 
+            await TrackPlayer.stop();
+            setCurrentTrack(song);
+            await TrackPlayer.skip(song.id);
+            await TrackPlayer.play();   
+        }, 
+        []
+    ); 
 
     const pause = useCallback(
         async () => {

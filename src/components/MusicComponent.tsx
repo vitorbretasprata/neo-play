@@ -1,9 +1,8 @@
-import React, { useState, memo } from 'react';
+import React, { memo } from 'react';
 
 import styled from "styled-components/native";
 import { Track } from 'react-native-track-player';
 
-import { usePlayerContext } from '../context/RNPlayerTrackContext';
 import { TouchableOpacity } from "react-native";
 
 interface SongInfo {
@@ -21,7 +20,7 @@ const MusicComponent : React.FC<SongInfo> = ({ index, item, onTouch }) => {
     return (
         <TouchableOpacity onPress={switchSong}>
             <MusicContainer accessible>
-                <Text numberOfLines={1} ellipsizeMode="tail">{item.title}</Text>
+                <Text numberOfLines={1} ellipsizeMode="tail">{index} - {item.title}</Text>
             </MusicContainer>
         </TouchableOpacity>
     );

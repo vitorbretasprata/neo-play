@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Track } from "react-native-track-player";
 import { FlatList } from "react-native-gesture-handler";
 
@@ -7,7 +7,7 @@ import HeaderListComponent from "../components/HeaderListComponent";
 import { usePlayerContext } from '../context/RNPlayerTrackContext';
 
 import { LinearGradient } from "expo-linear-gradient";
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { initMusicStorage } from "../helpers/getMediaMusic";
 
 interface ITrackElement {
@@ -15,37 +15,30 @@ interface ITrackElement {
   index: number
 }
 
-export default function List() {
+function List() {
     const [songList, setSongList] = useState<Array<Track>>([]);
+    const { switchSong } = usePlayerContext();
+
+    const switchTrack = useCallback(
+      (track : Track) => switchSong(track), 
+      []
+    );
 
     useEffect(() => {
       initStorage();
     }, []);
 
-    const values = usePlayerContext();
+    console.log("List", usePlayerContext());
 
     const initStorage = async () => {
       const musics = await initMusicStorage();
       if(musics) setSongList(musics);
-    }
+    }    
 
-    const switchSong = useCallback(
-      (track : Track) => values.switchSong(track), 
-      []
-    );
-
-    const renderMusic = ({ index, item } : ITrackElement) => <MusicComponent index={index} item={item} onTouch={switchSong} />;
+    const renderMusic = ({ index, item } : ITrackElement) => <MusicComponent index={index} item={item} onTouch={switchTrack} />;
     const renderHeader = () => <HeaderListComponent />;
 
-    const renderFooter = () => {
-      return (
-        <View> 
-
-        </View>
-      )
-    };
-
-    const renderSeparator = () =>  <View  style={{ height: 1, width: "100%", backgroundColor: "#707070" }}/>;
+    const renderSeparator = () =>  <View style={styles.separator}/>;
 
     const renderEmpty = () => {
       return (
@@ -66,7 +59,6 @@ export default function List() {
           data={songList}
           renderItem={renderMusic}
           ListHeaderComponent={renderHeader}
-          ListFooterComponent={renderFooter}
           ItemSeparatorComponent={renderSeparator}
           ListEmptyComponent={renderEmpty}
           invertStickyHeaders={true}
@@ -74,3 +66,13 @@ export default function List() {
       </LinearGradient>
     );
 }
+
+export default memo(List);
+
+const styles = StyleSheet.create({
+    separator: { 
+      height: 1, 
+      width: "100%", 
+      backgroundColor: "#707070" 
+    }
+});

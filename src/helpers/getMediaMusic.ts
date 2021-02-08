@@ -17,7 +17,7 @@ export const initMusicStorage = async () => {
                     id: song.id,
                     duration: song.duration,
                     url: song.uri,
-                    title: song.filename,
+                    title: song.filename.split(".")[0],
                     album: song.albumId,
                     artist: 'Unknown',
                 });
