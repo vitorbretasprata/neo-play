@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import styled from "styled-components/native";
 import { Track } from 'react-native-track-player';
@@ -24,7 +24,7 @@ const MusicComponent : React.FC<SongInfo> = ({ index, item, onTouch }) => {
     );
 }
 
-export default MusicComponent;
+export default memo(MusicComponent);
 
 const MusicContainer = styled.View`
     justify-content: center;
