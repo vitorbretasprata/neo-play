@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState, useCallback } from "react";
+import React, { PropsWithChildren, useState, useCallback, useReducer, Reducer } from "react";
 import TrackPlayer, { State as TrackState, STATE_NONE, STATE_PAUSED, STATE_PLAYING, STATE_STOPPED, Track } from "react-native-track-player";
 
 import { useTrackPlayerEvents } from 'react-native-track-player/lib/index';
@@ -26,15 +26,19 @@ export const PlayerTrackContext = React.createContext<PlayerTrackContext>({
     pause: () => null
 });
 
+const reducer : Reducer<TrackState | null, TrackState> = (state, value) => {
+    return value;
+} 
+
 export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) => {
 
-    const [playerState, setPlayerState] = useState<null | TrackState>(null);
+    const [state, dispatch] = useReducer(reducer, null);
 
     const [currentTrack, setCurrentTrack] = useState<null | Track>(null);
 
     useTrackPlayerEvents(['playback-state'], 
         (event: any) => {
-            setPlayerState(event.state);
+            dispatch(event.state);
         }
     );
 
@@ -72,10 +76,10 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
     );
     
     const value : PlayerTrackContext = {
-        isPlaying : playerState === STATE_PLAYING,
-        isPaused : playerState === STATE_PAUSED,
-        isStopped : playerState === STATE_STOPPED,
-        isEmpty : playerState === null,
+        isPlaying : state === STATE_PLAYING,
+        isPaused : state === STATE_PAUSED,
+        isStopped : state === STATE_STOPPED,
+        isEmpty : state === null,
         currentTrack,
         switchSong,
         pause,

@@ -15,8 +15,6 @@ const MiniPlayer : React.FC = () => {
     if(values.isEmpty || !values.currentTrack) {
         return null;
     }
-
-    console.log("Mini player")
     
     return (
         <MiniPlayerContainer>

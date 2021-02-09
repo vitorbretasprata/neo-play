@@ -1,52 +1,25 @@
-import React, { useState, useEffect, useCallback, memo } from 'react';
+import React, { useState, useEffect, memo, useCallback } from 'react';
 import { Track } from "react-native-track-player";
-import { FlatList } from "react-native-gesture-handler";
-
-import MusicComponent from "../components/MusicComponent";
-import HeaderListComponent from "../components/HeaderListComponent";
-import { usePlayerContext } from '../context/RNPlayerTrackContext';
-
 import { LinearGradient } from "expo-linear-gradient";
-import { View, StyleSheet } from 'react-native';
-import { initMusicStorage } from "../helpers/getMediaMusic";
 
-interface ITrackElement {
-  item: Track,
-  index: number
-}
+import { usePlayerContext } from '../context/RNPlayerTrackContext';
+import { initMusicStorage } from "../helpers/getMediaMusic";
+import TrackListComponent from "../components/TrackListComponent";
 
 function List() {
     const [songList, setSongList] = useState<Array<Track>>([]);
     const { switchSong } = usePlayerContext();
 
-    const switchTrack = useCallback(
-      (track : Track) => switchSong(track), 
-      []
-    );
+    const switchTrack = useCallback((track: Track) => switchSong(track), []);
 
     useEffect(() => {
       initStorage();
     }, []);
 
-    console.log("List", usePlayerContext());
-
     const initStorage = async () => {
       const musics = await initMusicStorage();
       if(musics) setSongList(musics);
     }    
-
-    const renderMusic = ({ index, item } : ITrackElement) => <MusicComponent index={index} item={item} onTouch={switchTrack} />;
-    const renderHeader = () => <HeaderListComponent />;
-
-    const renderSeparator = () =>  <View style={styles.separator}/>;
-
-    const renderEmpty = () => {
-      return (
-        <View> 
-
-        </View>
-      )
-    };
 
     return (
       <LinearGradient
@@ -54,25 +27,12 @@ function List() {
         start={[0.1, 0.2]}
         style={{ flex: 1 }}
       >
-
-        <FlatList 
-          data={songList}
-          renderItem={renderMusic}
-          ListHeaderComponent={renderHeader}
-          ItemSeparatorComponent={renderSeparator}
-          ListEmptyComponent={renderEmpty}
-          invertStickyHeaders={true}
+        <TrackListComponent 
+          TrackList={songList}
+          onSwitchTrack={switchTrack}
         />
       </LinearGradient>
     );
 }
 
 export default memo(List);
-
-const styles = StyleSheet.create({
-    separator: { 
-      height: 1, 
-      width: "100%", 
-      backgroundColor: "#707070" 
-    }
-});

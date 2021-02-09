@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 
 import styled from "styled-components/native";
 import { Track } from 'react-native-track-player';
@@ -14,9 +14,7 @@ interface SongInfo {
 const MusicComponent : React.FC<SongInfo> = ({ index, item, onTouch }) => {
 
     const switchSong = () => onTouch(item);
-
-    console.log(index);
-
+    console.log(index)
     return (
         <TouchableOpacity onPress={switchSong}>
             <MusicContainer accessible>
@@ -26,7 +24,7 @@ const MusicComponent : React.FC<SongInfo> = ({ index, item, onTouch }) => {
     );
 }
 
-export default memo(MusicComponent);
+export default MusicComponent;
 
 const MusicContainer = styled.View`
     justify-content: center;

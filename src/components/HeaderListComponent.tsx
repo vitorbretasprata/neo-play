@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled from "styled-components/native";
 import Entypo from "react-native-vector-icons/Entypo";
 
@@ -19,7 +19,7 @@ const HeaderListComponent : React.FC<INavigation> = () => {
     );
 }
 
-export default memo(HeaderListComponent);
+export default HeaderListComponent;
 
 const BtnAccessible = styled.View``;
 
