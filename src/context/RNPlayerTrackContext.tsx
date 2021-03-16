@@ -42,7 +42,7 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
     );
 
     const play = useCallback(
-        async (track? : Track) =>  {
+        async () =>  {
             await TrackPlayer.play();
         }, 
         []
@@ -50,15 +50,9 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
 
     const switchSong = useCallback(
         async (song : Track) => {
-            if(!currentTrack) {
-                setCurrentTrack(song);
-                await TrackPlayer.add(song);
-                await TrackPlayer.play();                        
-
-                return;                        
-            }
-
             setCurrentTrack(song);
+
+            
             await TrackPlayer.skip(song.id);
             if(state !== STATE_PLAYING) await TrackPlayer.play();
         }, 
