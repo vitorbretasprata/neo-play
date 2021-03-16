@@ -3,7 +3,6 @@ import TrackPlayer, { State as TrackState, STATE_NONE, STATE_PAUSED, STATE_PLAYI
 
 import { useTrackPlayerEvents } from 'react-native-track-player/lib/index';
 
-
 interface PlayerTrackContext {
     isPlaying: boolean,
     isPaused: boolean,
@@ -12,7 +11,7 @@ interface PlayerTrackContext {
     currentTrack: Track | null,
     play: (track? : Track) => void,
     switchSong: (track : Track) => void,
-    pause: () => void;
+    pause: () => void
 }
 
 export const PlayerTrackContext = React.createContext<PlayerTrackContext>({
@@ -59,11 +58,9 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
                 return;                        
             }
 
-            await TrackPlayer.add(song);
-            await TrackPlayer.stop();
             setCurrentTrack(song);
             await TrackPlayer.skip(song.id);
-            await TrackPlayer.play();   
+            if(state !== STATE_PLAYING) await TrackPlayer.play();
         }, 
         []
     ); 
@@ -83,7 +80,7 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
         currentTrack,
         switchSong,
         pause,
-        play
+        play,
     }
     
     return <PlayerTrackContext.Provider value={value}>{props.children}</PlayerTrackContext.Provider>;

@@ -20,8 +20,8 @@ export default function Home(props : any) {
       }
     }
 
-    const handleNext = () => value.next();
-    const handlePrevious = () => value.previous();
+    //.next();
+    //const handlePrevious = () => value.previous();
 
     const toggleDrawer = useCallback(() => props.navigation.toggleDrawer(), [props.navigation]);
 
@@ -43,8 +43,8 @@ export default function Home(props : any) {
           songTime={0}
         />
         <Controls
-            HandleBackward={handlePrevious}
-            HandleFastfoward={handleNext}
+            HandleBackward={() => {}}
+            HandleFastfoward={() => {}}
             HandlePlay={handlePlay}
             isPlaying={value.isPlaying}
             disabled={false}

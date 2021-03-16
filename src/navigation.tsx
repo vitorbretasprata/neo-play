@@ -3,13 +3,19 @@ import { NavigationContainer } from '@react-navigation/native';
 import { PlayerContextProvider } from "./context/RNPlayerTrackContext";
 
 import { createStackNavigator } from "@react-navigation/stack";
+import { initMusicStorage } from "./helpers/getMediaMusic";
 import TrackPlayer from 'react-native-track-player';
 
 import BottomTabs from "./components/BottomNavigator";
 
 const trackPlayerInit = async () => {
     try {
-        await TrackPlayer.setupPlayer();
+        const tracks = await initMusicStorage();
+        if(tracks) {
+          TrackPlayer.setupPlayer().then(async () => {
+            await TrackPlayer.add(tracks);
+          });
+        }        
 
     } catch (error) {
         console.log(error)

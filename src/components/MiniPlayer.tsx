@@ -6,55 +6,61 @@ import { Image, TouchableWithoutFeedback } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import { usePlayerContext } from "../context/RNPlayerTrackContext";
 
+
 const MiniPlayer : React.FC = () => {
 
     const values = usePlayerContext();
 
     const imgUrl = values.currentTrack?.artwork ? { uri: values.currentTrack.artwork } : require("../assets/images/disc-icon.png");
 
+    const handleTrackSelect = () => {
+    }
+
     if(values.isEmpty || !values.currentTrack) {
         return null;
     }
     
     return (
-        <MiniPlayerContainer>
-            <ImageContainer>
-                <Image 
-                    source={imgUrl}
-                    style={{ transform: [{ scale : 0.8 }] }}                    
-                />
-            </ImageContainer>
+        <TouchableWithoutFeedback onPress={handleTrackSelect}>
+            <MiniPlayerContainer>
+                <ImageContainer>
+                    <Image 
+                        source={imgUrl}
+                        style={{ transform: [{ scale : 0.8 }] }}                    
+                    />
+                </ImageContainer>
 
-            <MusicTextContainer>
-                <TextName numberOfLines={1} ellipsizeMode='tail'>
-                    {values.currentTrack?.title}
-                </TextName>
-            </MusicTextContainer>
+                <MusicTextContainer>
+                    <TextName numberOfLines={1} ellipsizeMode='tail'>
+                        {values.currentTrack?.title}
+                    </TextName>
+                </MusicTextContainer>
 
-            <IconContainer>
-                {values.isPlaying && (
-                    <TouchableWithoutFeedback onPress={values.pause}>
-                        <Entypo 
-                            name="controller-paus" 
-                            size={32} 
-                        />
-                        
-                    </TouchableWithoutFeedback>
-                )}
+                <IconContainer>
+                    {values.isPlaying && (
+                        <TouchableWithoutFeedback onPress={values.pause}>
+                            <Entypo 
+                                name="controller-paus" 
+                                size={32} 
+                            />
+                            
+                        </TouchableWithoutFeedback>
+                    )}
 
-                {!values.isPlaying && (
-                    <TouchableWithoutFeedback onPress={() => values.play()}>
-                        <Entypo 
-                            name="controller-play" 
-                            size={32} 
-                        />
-                    </TouchableWithoutFeedback>
-                )}                            
+                    {!values.isPlaying && (
+                        <TouchableWithoutFeedback onPress={() => values.play()}>
+                            <Entypo 
+                                name="controller-play" 
+                                size={32} 
+                            />
+                        </TouchableWithoutFeedback>
+                    )}                            
+                    
+                </IconContainer>
                 
-            </IconContainer>
-            
-        </MiniPlayerContainer>
-    )
+            </MiniPlayerContainer>
+        </TouchableWithoutFeedback>        
+    );
 }
 
 
