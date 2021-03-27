@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { PlayerContextProvider } from "./context/RNPlayerTrackContext";
 
-import { createStackNavigator } from "@react-navigation/stack";
 import { initMusicStorage } from "./helpers/getMediaMusic";
 import TrackPlayer from 'react-native-track-player';
 
-import BottomTabs from "./components/BottomNavigator";
+import StackNav from "./components/StackNav";
 
 const trackPlayerInit = async () => {
     try {
@@ -39,7 +38,7 @@ export default function Navigation() {
       <PlayerContextProvider>
         {ready && (
           <NavigationContainer>
-            <BottomTabs />
+            <StackNav /> 
           </NavigationContainer>
         )}        
       </PlayerContextProvider>

@@ -8,7 +8,7 @@ import { usePlayerContext } from "../context/RNPlayerTrackContext";
 
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function Home(props : any) {
+export default function Song(props : any) {
 
     const value = usePlayerContext();
 

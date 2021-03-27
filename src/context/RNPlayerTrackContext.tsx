@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState, useCallback, useReducer, Reducer } from "react";
+import React, { PropsWithChildren, useState, useCallback, useReducer, Reducer, useEffect } from "react";
 import TrackPlayer, { State as TrackState, STATE_NONE, STATE_PAUSED, STATE_PLAYING, STATE_STOPPED, Track } from "react-native-track-player";
 
 import { useTrackPlayerEvents } from 'react-native-track-player/lib/index';
@@ -48,13 +48,21 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
         []
     );
 
+    useEffect(() => {
+        if(currentTrack) {
+            changeSong(currentTrack);
+        }
+    }, [currentTrack]);
+
+    const changeSong = async (track : Track) => {
+        await TrackPlayer.skip(track.id);
+
+        if(state !== STATE_PLAYING) await TrackPlayer.play();
+    }
+    
     const switchSong = useCallback(
         async (song : Track) => {
-            setCurrentTrack(song);
-
-            
-            await TrackPlayer.skip(song.id);
-            if(state !== STATE_PLAYING) await TrackPlayer.play();
+            setCurrentTrack(song);            
         }, 
         []
     ); 

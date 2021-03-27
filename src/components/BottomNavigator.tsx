@@ -12,16 +12,17 @@ const ICON_SIZE = 24;
 
 const MainTabs = createBottomTabNavigator();
 
-export default () => {
-    
+export default (props : any) => {
     return (
         <MainTabs.Navigator
-        tabBar={(tabsProps) => (
-            <>
-                <MiniPlayer />
-                <BottomTabBar {...tabsProps} />
-            </>
-        )}
+            tabBar={(tabsProps) => (
+                <>
+                    <MiniPlayer
+                        {...tabsProps}
+                    />
+                    <BottomTabBar {...tabsProps} />
+                </>
+            )}
             tabBarOptions={{
                 activeTintColor: "lightblue"
             }}

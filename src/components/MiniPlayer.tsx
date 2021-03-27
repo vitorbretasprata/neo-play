@@ -6,15 +6,15 @@ import { Image, TouchableWithoutFeedback } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import { usePlayerContext } from "../context/RNPlayerTrackContext";
 
+import { BottomTabBarProps, BottomTabBarOptions } from "@react-navigation/bottom-tabs";
 
-const MiniPlayer : React.FC = () => {
+const MiniPlayer : React.FC<BottomTabBarProps<BottomTabBarOptions>> = ({ navigation }) => {
 
     const values = usePlayerContext();
 
     const imgUrl = values.currentTrack?.artwork ? { uri: values.currentTrack.artwork } : require("../assets/images/disc-icon.png");
 
-    const handleTrackSelect = () => {
-    }
+    const handleTrackSelect = () => navigation.navigate("Song");
 
     if(values.isEmpty || !values.currentTrack) {
         return null;
