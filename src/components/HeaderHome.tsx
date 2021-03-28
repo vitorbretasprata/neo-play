@@ -17,7 +17,7 @@ const HeaderHome : React.FC<INavigation> = ({ handleNavigation }) => {
     const [renderCompleted, setRenderCompleted] = useState(false);
 
     console.log("Home");
-    
+
     useEffect(() => {
         InteractionManager.runAfterInteractions(() => {
             setRenderCompleted(true);
@@ -31,8 +31,9 @@ const HeaderHome : React.FC<INavigation> = ({ handleNavigation }) => {
         return (
             <MarginSpace>
                 <TopContainer>
-                    <NeuMorph size={48} handlePress={navAction} bgColor="#626262">
+                    <NeuMorph size={48} bgColor="#626262">
                         <FontAwesome 
+                            onPress={navAction}
                             style={{...GlobalStyles.NeonIcon}}
                             name="arrow-left" 
                             size={24} 

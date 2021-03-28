@@ -12,25 +12,41 @@ export default function Song(props : any) {
 
     const value = usePlayerContext();
 
-    const handlePlay = () => {
-      if(value.isPlaying) {
-        value.pause();
-      } else {
+    const handlePlay = useCallback(
+      () => {
         value.play();
-      }
-    }
+      },
+      []
+    ); 
 
-    const handleNext = () => {
-      value.next();
-    }
+    const handlePause = useCallback(
+      () => {
+        console.log("fdsjfb")
+        value.pause();
+      },
+      []
+    ); 
+    
+    const handleNext = useCallback(
+      () => {
+        value.next();
+      }, 
+      []
+    );
 
-    const handlePrevious = () => {
-      value.previous();
-    }
+    const handlePrevious = useCallback(
+      () => {
+        value.previous();
+      }, 
+      []
+    );
 
-    const backAction = useCallback(() => {
-      props.navigation.goBack();
-    }, []);
+    const backAction = useCallback(
+      () => {
+        props.navigation.goBack();
+      }, 
+      []
+    );
 
     return (
       <LinearGradient
@@ -44,13 +60,13 @@ export default function Song(props : any) {
           currentTrack={value.currentTrack}
         />
         <Track
-          slidingStarted={() => {}}
-          slidingCompleted={() => {}}
-          sliderValue={0}
-          currentTime={0}
-          songTime={0}
+          slidingStarted={value.seekTo}
+          slidingCompleted={value.goTo}
+          sliderValue={value.position}
+          songTime={value.duration}
         />
         <Controls
+            HandlePause={handlePause}
             HandleBackward={handlePrevious}
             HandleFastfoward={handleNext}
             HandlePlay={handlePlay}

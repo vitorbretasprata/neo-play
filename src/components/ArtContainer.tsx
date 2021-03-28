@@ -29,11 +29,9 @@ const ArtContainer : React.FC<IArtContainer> = ({ currentTrack }) => {
     
                 <SongInfoContainer>
                     <SongArtist numberOfLines={1} ellipsizeMode='tail'>
-                        {(currentTrack && currentTrack.artist) && currentTrack.artist}
-                    </SongArtist>
-                    <SongName numberOfLines={1} ellipsizeMode='tail'>
                         {(currentTrack && currentTrack.title) && currentTrack.title}
-                    </SongName>
+                    </SongArtist>
+                    
                 </SongInfoContainer>
             </SongContainer>
         );
@@ -70,7 +68,8 @@ const SongInfoContainer = styled.View`
 `;
 
 const SongArtist = styled.Text`
-    font-size: 30px;
+    font-size: 25px;
+    padding: 5px 0px;
     color: #c3c3c3;
     font-weight: 600;
 `;

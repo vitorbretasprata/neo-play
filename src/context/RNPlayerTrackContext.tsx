@@ -80,40 +80,25 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
         if(state !== STATE_PLAYING) await TrackPlayer.play();     
     }
 
-    const play = useCallback(
-        async () =>  {
-            await TrackPlayer.play();
-        }, 
-        []
-    );
+    const play = async () =>  {
+        await TrackPlayer.play();
+    }
     
-    const switchSong = useCallback(
-        async (song : Track) => {
-            await TrackPlayer.skip(song.id);
-        }, 
-        []
-    ); 
+    const switchSong = async (song : Track) => {
+        await TrackPlayer.skip(song.id);
+    }
 
-    const pause = useCallback(
-        async () => {
-            await TrackPlayer.pause();
-        }, 
-        []
-    );
+    const pause = async () => {
+        await TrackPlayer.pause();
+    }
 
-    const next = useCallback(
-        async () => {
-            await TrackPlayer.skipToNext();
-        }, 
-        []
-    );
+    const next = async () => {
+        await TrackPlayer.skipToNext();
+    }
 
-    const previous = useCallback(
-        async () => {
-            await TrackPlayer.skipToPrevious();
-        }, 
-        []
-    );
+    const previous = async () => {
+        await TrackPlayer.skipToPrevious();
+    }
 
     const seekTo = () => {
 

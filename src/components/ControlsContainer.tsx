@@ -10,35 +10,39 @@ interface IControls {
     isPlaying: boolean,
     disabled: boolean,
     HandlePlay: (Event : GestureResponderEvent) => void,
+    HandlePause: (Event : GestureResponderEvent) => void,
     HandleBackward: (Event : GestureResponderEvent) => void,
     HandleFastfoward: (Event : GestureResponderEvent) => void
 }
 
-const Controls : React.FC<IControls> = ({ HandlePlay, HandleBackward, HandleFastfoward, isPlaying, disabled }) => {
+const Controls : React.FC<IControls> = ({ HandlePlay, HandlePause, HandleBackward, HandleFastfoward, isPlaying, disabled }) => {
     
     console.log("Controls");
 
     return (
         <ControlsContainer>
             <AlignContainer>
-                <NeuMorph size={40} handlePress={HandleBackward}>
+                <NeuMorph size={40}>
                     <Entypo 
+                        onPress={HandleBackward}
                         style={{...GlobalStyles.NeonIcon}}
                         name="controller-fast-backward" 
                         size={18} 
                     />
                 </NeuMorph>
 
-                <NeuMorph size={60} handlePress={HandlePlay}>
+                <NeuMorph size={60}>
                     {
                     isPlaying ? 
                         <Entypo 
+                            onPress={HandlePlay}
                             style={{...GlobalStyles.NeonIcon}} 
                             name="controller-paus" 
                             size={24} 
                         /> 
                     : 
                         <Entypo 
+                            onPress={HandlePause}
                             style={{...GlobalStyles.NeonIcon}} 
                             name="controller-play" 
                             size={24} 
@@ -46,8 +50,9 @@ const Controls : React.FC<IControls> = ({ HandlePlay, HandleBackward, HandleFast
                     }
                 </NeuMorph>
 
-                <NeuMorph size={40} handlePress={HandleFastfoward}>
+                <NeuMorph size={40}>
                     <Entypo 
+                        onPress={HandleFastfoward}
                         style={{...GlobalStyles.NeonIcon}} 
                         name="controller-fast-forward" 
                         size={18} 

@@ -33,29 +33,23 @@ function convertTime(totalSeconds : number) : string {
     return `${minuteStr}:${secondsStr}`;
 }
 
-const Track : React.FC<ITrack> = () => {
-
-    const { duration, position, goTo } = usePlayerContext();
-
-    const handleSeekTo = (v : number) => goTo(v);
+const Track : React.FC<ITrack> = ({ sliderValue, slidingCompleted, slidingStarted, songTime }) => {
 
     return (
         <TrackContainer>
             <AlignContainer>
-                <Text style={{...GlobalStyles.MiniNeonText}}>{convertTime(duration - position)}</Text>
-                <Text style={{...GlobalStyles.MiniNeonText}}>{convertTime(position)}</Text>
+                <Text style={{...GlobalStyles.MiniNeonText}}>{convertTime(sliderValue)}</Text>
+                <Text style={{...GlobalStyles.MiniNeonText}}>{convertTime(songTime)}</Text>
             </AlignContainer>
             <StyledSlider
                 minimumValue={0}
-                maximumValue={duration}
-                onValueChange={v => {
-                    goTo(v);
-                }}
-                onSlidingComplete={handleSeekTo}
+                maximumValue={songTime}
+                onSlidingStart={slidingStarted}
+                onSlidingComplete={slidingCompleted}
                 minimumTrackTintColor="#FFFFFF"
                 maximumTrackTintColor="#000000"
                 thumbTintColor="#789BFF"
-                value={position}                      
+                value={sliderValue}                      
             />
         </TrackContainer>
     )

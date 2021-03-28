@@ -7,12 +7,11 @@ type INeuMorph = {
     children: ReactNode,
     size?: number,
     bgColor?: string,
-    handlePress: Function
 }
 
 const AnimatedNeomorphBlur = Animated.createAnimatedComponent(NeomorphBlur);
 
-const NeuMorph : React.FC<INeuMorph> = ({ children, size, bgColor, handlePress }) => {
+const NeuMorph : React.FC<INeuMorph> = ({ children, size, bgColor }) => {
 
     const [press, setPress] = useState(false);
 
@@ -20,7 +19,6 @@ const NeuMorph : React.FC<INeuMorph> = ({ children, size, bgColor, handlePress }
         setPress(true);
     }
     const handlePressEnd = () => {
-        handlePress();
         setPress(false);
     }
     
