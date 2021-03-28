@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, StatusBar } from "react-native";
+import React, { useEffect, useState, memo } from 'react';
+import { StatusBar, InteractionManager } from "react-native";
 import styled from "styled-components/native";
-import Entypo from "react-native-vector-icons/Entypo";
+import FontAwesome from "react-native-vector-icons/FontAwesome5";
 
 import NeuMorph from "./NeuMorph";
 import { GlobalStyles } from "../screens/global/styles";
@@ -9,35 +9,46 @@ import { GlobalStyles } from "../screens/global/styles";
 const { currentHeight } = StatusBar;
 
 interface INavigation {
-    toggleNavigation: Function
+    handleNavigation: Function
 }
 
-const HeaderHome : React.FC<INavigation> = ({ toggleNavigation }) => {
+const HeaderHome : React.FC<INavigation> = ({ handleNavigation }) => {
 
-    const handleNavigation = () => toggleNavigation();
+    const [renderCompleted, setRenderCompleted] = useState(false);
 
-    return (
-        <MarginSpace>
-            <TopContainer>
-                <WhiteSpace />
+    console.log("Home");
+    
+    useEffect(() => {
+        InteractionManager.runAfterInteractions(() => {
+            setRenderCompleted(true);
+        })
+    }, []);
 
-                <View>
-                    <Text style={{...GlobalStyles.NeonText}}>PLAYING NOW</Text>
-                </View>
 
-                <NeuMorph size={48} handlePress={handleNavigation} bgColor="#626262">
-                    <Entypo 
-                        style={{...GlobalStyles.NeonIcon}}
-                        name="menu" 
-                        size={24} 
-                    />
-                </NeuMorph>
-            </TopContainer>
-        </MarginSpace>
-    );
+    const navAction = () => handleNavigation();
+
+    if(renderCompleted) {
+        return (
+            <MarginSpace>
+                <TopContainer>
+                    <NeuMorph size={48} handlePress={navAction} bgColor="#626262">
+                        <FontAwesome 
+                            style={{...GlobalStyles.NeonIcon}}
+                            name="arrow-left" 
+                            size={24} 
+                        />
+                    </NeuMorph>   
+                    
+                </TopContainer>
+            </MarginSpace>
+        );
+    }
+
+    return null;
+    
 }
 
-export default HeaderHome;
+export default memo(HeaderHome);
 
 const MarginSpace = styled.View`    
     margin: ${props => (currentHeight || 24)  + 32}px 32px 0 32px;

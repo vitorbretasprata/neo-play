@@ -15,6 +15,8 @@ interface IControls {
 }
 
 const Controls : React.FC<IControls> = ({ HandlePlay, HandleBackward, HandleFastfoward, isPlaying, disabled }) => {
+    
+    console.log("Controls");
 
     return (
         <ControlsContainer>

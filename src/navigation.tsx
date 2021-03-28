@@ -27,7 +27,18 @@ export default function Navigation() {
     useEffect(() => {
         const initTrack = async () => {
             await trackPlayerInit();
-                  
+                
+            TrackPlayer.updateOptions({
+              capabilities: [
+                TrackPlayer.CAPABILITY_PLAY,
+                TrackPlayer.CAPABILITY_PAUSE,
+                TrackPlayer.CAPABILITY_SKIP_TO_NEXT,
+                TrackPlayer.CAPABILITY_SKIP_TO_PREVIOUS,
+
+              ],
+              jumpInterval: 30,
+              color: 2
+            })
             setReady(true);             
         }
 

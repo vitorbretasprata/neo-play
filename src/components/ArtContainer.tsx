@@ -1,28 +1,45 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
+import { InteractionManager } from "react-native";
 import styled from "styled-components/native";
 
 import { Track } from "react-native-track-player";
+
 interface IArtContainer {
-    currentTrack: any
+    currentTrack: Track
 }
 
 const ArtContainer : React.FC<IArtContainer> = ({ currentTrack }) => {
-    return (
-        <SongContainer>
-            <SongArtContainer>
-                <SongArt source={require("../assets/images/disc-icon.png")} />
-            </SongArtContainer>
 
-            <SongInfoContainer>
-                <SongArtist numberOfLines={1} ellipsizeMode='tail'>
-                    {currentTrack ? currentTrack.artist : "Unknown"}
-                </SongArtist>
-                <SongName numberOfLines={1} ellipsizeMode='tail'>
-                    {currentTrack ? currentTrack.title : "Unknown"}
-                </SongName>
-            </SongInfoContainer>
-        </SongContainer>
-    );
+    const [renderCompleted, setRenderCompleted] = useState(false);
+
+    console.log("Art")
+
+    useEffect(() => {
+        InteractionManager.runAfterInteractions(() => {
+            setRenderCompleted(true);
+        })
+    }, []);
+
+    if(renderCompleted) {
+        return (
+            <SongContainer>
+                <SongArtContainer>
+                    <SongArt source={require("../assets/images/disc-icon.png")} />
+                </SongArtContainer>
+    
+                <SongInfoContainer>
+                    <SongArtist numberOfLines={1} ellipsizeMode='tail'>
+                        {(currentTrack && currentTrack.artist) && currentTrack.artist}
+                    </SongArtist>
+                    <SongName numberOfLines={1} ellipsizeMode='tail'>
+                        {(currentTrack && currentTrack.title) && currentTrack.title}
+                    </SongName>
+                </SongInfoContainer>
+            </SongContainer>
+        );
+    }
+
+    return null;    
 }
 
 export default memo(ArtContainer);

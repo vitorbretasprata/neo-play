@@ -1,7 +1,7 @@
-import React, { PropsWithChildren, useState, useCallback, useReducer, Reducer, useEffect } from "react";
-import TrackPlayer, { State as TrackState, STATE_NONE, STATE_PAUSED, STATE_PLAYING, STATE_STOPPED, Track } from "react-native-track-player";
+import React, { PropsWithChildren, useState, useCallback, useReducer, Reducer } from "react";
+import TrackPlayer, { State as TrackState, STATE_PAUSED, STATE_PLAYING, STATE_STOPPED, Track } from "react-native-track-player";
 
-import { useTrackPlayerEvents } from 'react-native-track-player/lib/index';
+import { useTrackPlayerEvents, useTrackPlayerProgress } from 'react-native-track-player/lib/index';
 
 interface PlayerTrackContext {
     isPlaying: boolean,
@@ -9,9 +9,26 @@ interface PlayerTrackContext {
     isStopped: boolean,
     isEmpty: boolean,
     currentTrack: Track | null,
+    position: number,
+    duration: number,
     play: (track? : Track) => void,
     switchSong: (track : Track) => void,
-    pause: () => void
+    pause: () => void,
+    seekTo: () => void,
+    goTo: (value : number) => void,
+    next: () => void,
+    previous: () => void
+}
+
+interface ProgressComponentState {
+    position: number,
+    bufferedPosition: number,
+    duration: number
+}
+
+interface ProgressComponent {
+    getProgress: () => number,
+    getBufferedProgress: () => number
 }
 
 export const PlayerTrackContext = React.createContext<PlayerTrackContext>({
@@ -20,9 +37,15 @@ export const PlayerTrackContext = React.createContext<PlayerTrackContext>({
     isStopped: false,
     isEmpty: true,
     currentTrack: null,
+    position: 0,
+    duration: 0,
     play: (track) => null,
     switchSong: (track : Track) => null,
-    pause: () => null
+    seekTo: () => null,
+    goTo: (value : number) => null,
+    pause: () => null,
+    next: () => null,
+    previous: () => null
 });
 
 const reducer : Reducer<TrackState | null, TrackState> = (state, value) => {
@@ -33,13 +56,29 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
 
     const [state, dispatch] = useReducer(reducer, null);
 
+    const { position, duration } = useTrackPlayerProgress();
+
     const [currentTrack, setCurrentTrack] = useState<null | Track>(null);
 
-    useTrackPlayerEvents(['playback-state'], 
+    useTrackPlayerEvents(['playback-state', 'playback-track-changed'], 
         (event: any) => {
             dispatch(event.state);
         }
     );
+
+    useTrackPlayerEvents(['playback-track-changed'], 
+        (event: any) => {
+            changeTrackInfo(event.nextTrack)
+        }
+    );
+
+    const changeTrackInfo = async (trackId : string) => {
+        const trackPlaying = await TrackPlayer.getTrack(trackId);
+
+        if(trackPlaying) setCurrentTrack(trackPlaying);
+
+        if(state !== STATE_PLAYING) await TrackPlayer.play();     
+    }
 
     const play = useCallback(
         async () =>  {
@@ -47,22 +86,10 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
         }, 
         []
     );
-
-    useEffect(() => {
-        if(currentTrack) {
-            changeSong(currentTrack);
-        }
-    }, [currentTrack]);
-
-    const changeSong = async (track : Track) => {
-        await TrackPlayer.skip(track.id);
-
-        if(state !== STATE_PLAYING) await TrackPlayer.play();
-    }
     
     const switchSong = useCallback(
         async (song : Track) => {
-            setCurrentTrack(song);            
+            await TrackPlayer.skip(song.id);
         }, 
         []
     ); 
@@ -73,77 +100,47 @@ export const PlayerContextProvider: React.FC = (props : PropsWithChildren<any>) 
         }, 
         []
     );
+
+    const next = useCallback(
+        async () => {
+            await TrackPlayer.skipToNext();
+        }, 
+        []
+    );
+
+    const previous = useCallback(
+        async () => {
+            await TrackPlayer.skipToPrevious();
+        }, 
+        []
+    );
+
+    const seekTo = () => {
+
+    }
+
+    const goTo = async (value : number) => {
+        await TrackPlayer.seekTo(value);
+    }
     
     const value : PlayerTrackContext = {
         isPlaying : state === STATE_PLAYING,
         isPaused : state === STATE_PAUSED,
         isStopped : state === STATE_STOPPED,
         isEmpty : state === null,
+        position,
+        duration,
         currentTrack,
         switchSong,
         pause,
         play,
+        seekTo,
+        goTo,
+        next,
+        previous
     }
     
     return <PlayerTrackContext.Provider value={value}>{props.children}</PlayerTrackContext.Provider>;
 }
 
 export const usePlayerContext = () => React.useContext(PlayerTrackContext);
-
-/**
- * const previous = useCallback(
-        async () => {
-            if(position > 1.5) {
-                await TrackPlayer.seekTo(0);
-            } else {
-                await TrackPlayer.skipToPrevious();
-            }
-            setSliderValue(0);
-        },
-        []
-    );
-
-    const switchSong = useCallback(
-        async (song : Track) => {
-            if(!currentTrack) {
-                TrackPlayer.skip(song.id)
-                    .then(async () => {
-                        await TrackPlayer.play();
-                    }).finally(() => {
-                        setCurrentTrack(song);
-                    });          
-
-                return;                        
-            }
-
-            TrackPlayer.stop()
-                .then(async () => {
-                    const currentSong = await TrackPlayer.getCurrentTrack();
-                    if(currentSong == song.id) {
-                        await TrackPlayer.seekTo(0);
-                    } else {
-                        setCurrentTrack(song);
-                        await TrackPlayer.skip(song.id);
-                    }
-                }).finally(() => {
-                    TrackPlayer.play();
-            });
-        }, 
-        []
-    );        
-
-    const next = async () => await TrackPlayer.skipToNext();
-
-
-    if (!track) {
-        if (currentTrack) {
-        await TrackPlayer.play();
-        }
-        return;
-    }
-
-    await TrackPlayer.add(track);
-    await TrackPlayer.play();
-
- * 
- */

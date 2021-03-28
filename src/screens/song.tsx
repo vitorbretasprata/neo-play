@@ -20,10 +20,17 @@ export default function Song(props : any) {
       }
     }
 
-    //.next();
-    //const handlePrevious = () => value.previous();
+    const handleNext = () => {
+      value.next();
+    }
 
-    const toggleDrawer = useCallback(() => props.navigation.toggleDrawer(), [props.navigation]);
+    const handlePrevious = () => {
+      value.previous();
+    }
+
+    const backAction = useCallback(() => {
+      props.navigation.goBack();
+    }, []);
 
     return (
       <LinearGradient
@@ -31,7 +38,8 @@ export default function Song(props : any) {
         start={[0.1, 0.2]}
         style={{ flex: 1 }}
       >
-        <HeaderHome toggleNavigation={toggleDrawer}/>
+
+        <HeaderHome handleNavigation={backAction}/>
         <ArtContainer
           currentTrack={value.currentTrack}
         />
@@ -43,12 +51,18 @@ export default function Song(props : any) {
           songTime={0}
         />
         <Controls
-            HandleBackward={() => {}}
-            HandleFastfoward={() => {}}
+            HandleBackward={handlePrevious}
+            HandleFastfoward={handleNext}
             HandlePlay={handlePlay}
             isPlaying={value.isPlaying}
             disabled={false}
         />
+        
       </LinearGradient>
     );
 }
+
+/**
+ * 
+ * 
+ */
