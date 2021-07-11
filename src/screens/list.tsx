@@ -12,13 +12,13 @@ function List() {
 
     return (
       <LinearGradient
-        colors={["#626262", "#737373"]}
+        colors={['#6D0BBA', '#450029']}
         start={[0.1, 0.2]}
         style={{ flex: 1 }}
       >
-        <TrackListComponent 
-          onSwitchTrack={switchTrack}
-        />
+          <TrackListComponent 
+            onSwitchTrack={switchTrack}
+          />
       </LinearGradient>
     );
 }
