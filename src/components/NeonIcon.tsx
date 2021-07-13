@@ -16,9 +16,9 @@ const NeonIcon : React.FC<INeonIcon> = ({ icon, focused }) => {
             maskElement={
                 <View
                     style={{
-                    backgroundColor: 'transparent',
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                        backgroundColor: 'transparent',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                     }}
                 >
                     {icon}

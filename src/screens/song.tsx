@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback} from 'react';
+import React, {useCallback} from 'react';
 
 import HeaderHome from '../components/HeaderHome';
 import ArtContainer from '../components/ArtContainer';
@@ -16,7 +16,6 @@ export default function Song(props: any) {
   }, []);
 
   const handlePause = useCallback(() => {
-    console.log('fdsjfb');
     value.pause();
   }, []);
 

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components/native";
 
-import { Image, TouchableWithoutFeedback, StyleSheet } from "react-native";
+import { Image, TouchableWithoutFeedback, StyleSheet, View } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import MusicIcon from "react-native-vector-icons/FontAwesome";
 
@@ -25,85 +25,90 @@ const MiniPlayer : React.FC<BottomTabBarProps<BottomTabBarOptions>> = ({ navigat
     }
     
     return (
-        <TouchableWithoutFeedback onPress={handleTrackSelect} style={styles.shadow}>
-            <MiniPlayerContainer>
 
-                <LinearGradient 
-                    colors={['#6D0BBA', '#450029']}
-                    start={{x: 0, y: 0 }} 
-                    end={{x: 1, y: 0}}
+        <MiniPlayerContainer 
+            colors={['#6D0BBA', '#450029']}
+            start={ {x: 0, y: 0 }} 
+            end={{ x: 1, y: 0 }}
 
-                    style={styles.gradientContainer}
-                >
-                    <ImageContainer>
-                        <NeonIcon icon={
-                            <MusicIcon 
-                                name="music" 
-                                size={30} 
-                                color="white"
-                                style={styles.shadow}
-                            />
-                        }/>
-                    </ImageContainer>
+            style={styles.shadow}
+        >
+            <TouchableWithoutFeedback onPress={handleTrackSelect}>
+                <ImageContainer>
+                    <NeonIcon icon={
+                        <MusicIcon 
+                            name="music" 
+                            size={30} 
+                            color="white"
+                            style={styles.shadow}
+                        />
+                    }/>
+                </ImageContainer>
+            </TouchableWithoutFeedback>
 
-                    <MusicTextContainer>
-                        <TrackText numberOfLines={1} ellipsizeMode="tail" style={styles.NeonText}>
-                            {values.currentTrack?.title}
-                        </TrackText>
-                        <AuthorText numberOfLines={1} ellipsizeMode="tail">
-                            Autor
-                        </AuthorText>
-                    </MusicTextContainer>
+            <TouchableWithoutFeedback onPress={handleTrackSelect}>
+                <MusicTextContainer>
+                    <TrackText numberOfLines={1} ellipsizeMode="tail" style={styles.NeonText}>
+                        {values.currentTrack?.title}
+                    </TrackText>
+                    <AuthorText numberOfLines={1} ellipsizeMode="tail">
+                        Autor
+                    </AuthorText>
+                </MusicTextContainer>
+            </TouchableWithoutFeedback>
 
-                    <IconContainer>
-                        {values.isPlaying && (
-                            <TouchableWithoutFeedback onPress={values.pause}>
-                                <NeonIcon icon={
-                                    <Entypo 
-                                        name="controller-paus" 
-                                        size={32} 
-                                        style={styles.shadow}
-                                    />
-                                }/>
-                            </TouchableWithoutFeedback>
-                        )}
 
-                        {!values.isPlaying && (
-                            <TouchableWithoutFeedback onPress={() => values.play()}>
-                                <NeonIcon icon={
-                                    <Entypo 
-                                        name="controller-play" 
-                                        size={32} 
-                                        style={styles.shadow}
-                                    />
-                                }/>
-                            </TouchableWithoutFeedback>
-                        )}
+            <IconContainer>
+                {values.isPlaying && (
+                    <TouchableWithoutFeedback onPress={values.pause}>
+                        <View>
+                            <NeonIcon icon={
+                                <Entypo 
+                                    name="controller-paus" 
+                                    size={32} 
+                                    style={styles.shadow}
+                                />
+                            }/>
+                        </View>
+                    </TouchableWithoutFeedback>
+                )}
 
-                    </IconContainer>
+                {!values.isPlaying && (
+                    <TouchableWithoutFeedback onPress={() => values.play()}>
+                        <View>
+                            <NeonIcon icon={
+                                <Entypo 
+                                    name="controller-play" 
+                                    size={32} 
+                                    style={styles.shadow}
+                                />
+                            }/>
+                        </View>
+                    </TouchableWithoutFeedback>
+                )}
 
-                </LinearGradient>
-            </MiniPlayerContainer>
-        </TouchableWithoutFeedback>
+            </IconContainer>
+
+        </MiniPlayerContainer>
     );
 }
 
 
-const MiniPlayerContainer = styled.View`
+
+
+const MiniPlayerContainer = styled(LinearGradient)`
     position: absolute;
     bottom: 65px;
-    left: 0;
-    right: 0;
     width: 100%;
     height: 55px;
-    border-radius: 20px;
+    border-radius: 50px;
     justify-content: space-between;
     flex-direction: row;
     align-items: center;
+    padding: 5px 40px 0 20px;
 `;
 
 const ImageContainer = styled.View`    
-    border: 1px solid red;
     justify-content: center;
     align-items: center;
 `;
@@ -125,23 +130,12 @@ const TrackText = styled.Text`
 `;
 
 const IconContainer = styled.View`
-    border: 1px solid red;
     z-index: 20;
     justify-content: center;
     align-items: center;
 `;
 
 const styles = StyleSheet.create({
-    gradientContainer: {
-        flex: 1,
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexDirection: "row",
-        height: "100%",
-        borderRadius: 50,
-        paddingHorizontal: 20,
-        paddingRight: 40
-    },
     shadow: {
         textShadowColor: 'rgba(255, 137, 137, 1)',
         textShadowOffset: {
@@ -150,8 +144,9 @@ const styles = StyleSheet.create({
         },
         textShadowRadius: 16,
         color: "#FF8989",
-        elevation: 4,
-        fontWeight: "800"
+        elevation: 8,
+        fontWeight: "800",
+        backgroundColor : "#0000"
     },
     NeonText: {
         textShadowColor: 'rgba(255, 51, 235, 1)',

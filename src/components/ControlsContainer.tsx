@@ -1,9 +1,8 @@
 import React, { memo } from 'react';
 import styled from "styled-components/native";
 
-import NeuMorph from "./NeuMorph";
-import { GlobalStyles } from "../screens/global/styles";
-import { GestureResponderEvent } from 'react-native';
+import NeonIcon from "./NeonIcon";
+import { GestureResponderEvent, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import Entypo from "react-native-vector-icons/Entypo";
 
 interface IControls {
@@ -19,58 +18,112 @@ const Controls : React.FC<IControls> = ({ HandlePlay, HandlePause, HandleBackwar
     
     console.log("Controls");
 
+    const handleStateTrack = (Event: GestureResponderEvent) => {
+        if(isPlaying) {
+            HandlePause(Event);
+        } else {
+            HandlePlay(Event);
+        }
+    }
+
     return (
-        <ControlsContainer>
-            <AlignContainer>
-                <NeuMorph size={40}>
-                    <Entypo 
-                        onPress={HandleBackward}
-                        style={{...GlobalStyles.NeonIcon}}
-                        name="controller-fast-backward" 
-                        size={18} 
-                    />
-                </NeuMorph>
-
-                <NeuMorph size={60}>
-                    {
-                    isPlaying ? 
+        <AlignContainer>
+            <TouchableWithoutFeedback onPress={HandleBackward}>
+                <View>
+                    <NeonIcon icon={
                         <Entypo 
-                            onPress={HandlePlay}
-                            style={{...GlobalStyles.NeonIcon}} 
-                            name="controller-paus" 
-                            size={24} 
-                        /> 
-                    : 
-                        <Entypo 
-                            onPress={HandlePause}
-                            style={{...GlobalStyles.NeonIcon}} 
-                            name="controller-play" 
-                            size={24} 
+                            name="loop" 
+                            size={22} 
+                            style={styles.NeonText}
                         />
-                    }
-                </NeuMorph>
+                    }/>
+                </View>
+            </TouchableWithoutFeedback>
 
-                <NeuMorph size={40}>
-                    <Entypo 
-                        onPress={HandleFastfoward}
-                        style={{...GlobalStyles.NeonIcon}} 
-                        name="controller-fast-forward" 
-                        size={18} 
-                    />
-                </NeuMorph>
-            </AlignContainer>
-        </ControlsContainer>
+            <TouchableWithoutFeedback onPress={HandleBackward}>
+                <View>
+                    <NeonIcon icon={
+                        <Entypo 
+                            name="controller-fast-backward" 
+                            size={32} 
+                            style={styles.NeonText}
+                        />
+                    }/>
+                </View>
+            </TouchableWithoutFeedback>
+
+            <TouchableWithoutFeedback onPress={handleStateTrack}>
+                <CenterIcon>
+                    {
+                        isPlaying ? 
+                            <NeonIcon icon={
+                                <Entypo 
+                                    style={styles.NeonText}
+                                    name="controller-paus" 
+                                    size={58} 
+                                /> 
+                            }/>
+                        : 
+                            <NeonIcon icon={
+                                <Entypo 
+                                    style={styles.NeonText}
+                                    name="controller-play" 
+                                    size={58} 
+                                />
+                            }/>
+                    }
+                </CenterIcon>
+            </TouchableWithoutFeedback>
+
+            <TouchableWithoutFeedback onPress={HandleFastfoward}>
+                <View>
+                    <NeonIcon icon={
+                        <Entypo 
+                            style={styles.NeonText}
+                            name="controller-fast-forward" 
+                            size={32} 
+                        />
+                    }/>
+                </View>
+            </TouchableWithoutFeedback>
+
+            <TouchableWithoutFeedback onPress={HandleBackward}>
+                <View>
+                    <NeonIcon icon={
+                        <Entypo 
+                            name="shuffle" 
+                            size={22} 
+                            style={styles.NeonText}
+                        />
+                    }/>
+                </View>
+            </TouchableWithoutFeedback>
+        </AlignContainer>
     );
 }
 
 export default memo(Controls);
 
-const ControlsContainer = styled.View`
-    margin: 0 64px;
+const CenterIcon = styled.View`
+    margin-bottom: 18px;
+    z-index: 99;
 `;
 
 const AlignContainer = styled.View`
+    padding: 0 32px 12px 32px;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 `;
+
+const styles = StyleSheet.create({
+    NeonText: {
+        textShadowColor: 'rgba(255, 51, 235, 1)',
+        textShadowOffset: {
+            width: 0,
+            height: 0
+        },
+        textShadowRadius: 16,
+        elevation: 4,
+    }
+});

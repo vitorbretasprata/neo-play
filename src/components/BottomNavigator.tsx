@@ -10,13 +10,14 @@ import Foundation from "react-native-vector-icons/Foundation";
 import { StyleSheet } from "react-native";
 import Animated, { interpolate, useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 
-const ICON_SIZE = 32;
+const ICON_SIZE = 28;
 
 const MainTabs = createBottomTabNavigator();
 
 export default (props : any) => {
     return (
         <MainTabs.Navigator
+        
             tabBar={(tabsProps) => (
                 <>
                     <MiniPlayer
@@ -71,10 +72,12 @@ const styles = StyleSheet.create({
     BottomTabBar: {
         backgroundColor: "transparent",
         borderTopWidth: 0,
+        elevation: 0,
+        shadowOpacity: 0,
         position: "absolute",
-        left: 50,
-        right: 50,
+        left: 0,
+        right: 0,
         bottom: 0,
-        height: 60
+        height: 50
     }
 });
