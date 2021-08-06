@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { StatusBar, View } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { PlayerContextProvider } from "./context/RNPlayerTrackContext";
 
@@ -27,7 +28,7 @@ export default function Navigation() {
     useEffect(() => {
         const initTrack = async () => {
             await trackPlayerInit();
-                
+
             TrackPlayer.updateOptions({
               capabilities: [
                 TrackPlayer.CAPABILITY_PLAY,
@@ -39,7 +40,7 @@ export default function Navigation() {
               jumpInterval: 30,
               color: 2
             })
-            setReady(true);             
+            setReady(true);
         }
 
         initTrack();
@@ -47,11 +48,12 @@ export default function Navigation() {
 
     return (
       <PlayerContextProvider>
+        <StatusBar backgroundColor="#6D0BBA" barStyle="default" />
         {ready && (
           <NavigationContainer>
             <StackNav /> 
           </NavigationContainer>
-        )}        
+        )}
       </PlayerContextProvider>
     );
 }

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, memo, useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
+import { StatusBar } from "react-native";
 import { Track } from "react-native-track-player";
 import { LinearGradient } from "expo-linear-gradient";
 

@@ -1,13 +1,12 @@
 import React from "react";
 import styled from "styled-components/native";
-
-import { Image, TouchableWithoutFeedback, StyleSheet, View } from "react-native";
+import { TouchableWithoutFeedback, StyleSheet, View } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
+
 import MusicIcon from "react-native-vector-icons/FontAwesome";
+import Entypo from "react-native-vector-icons/Entypo";
 
 import NeonIcon from "./NeonIcon";
-
-import Entypo from "react-native-vector-icons/Entypo";
 import { usePlayerContext } from "../context/RNPlayerTrackContext";
 
 import { BottomTabBarProps, BottomTabBarOptions } from "@react-navigation/bottom-tabs";
@@ -23,9 +22,8 @@ const MiniPlayer : React.FC<BottomTabBarProps<BottomTabBarOptions>> = ({ navigat
     if(values.isEmpty || !values.currentTrack) {
         return null;
     }
-    
-    return (
 
+    return (
         <MiniPlayerContainer 
             colors={['#6D0BBA', '#450029']}
             start={ {x: 0, y: 0 }} 
@@ -88,13 +86,10 @@ const MiniPlayer : React.FC<BottomTabBarProps<BottomTabBarOptions>> = ({ navigat
                 )}
 
             </IconContainer>
-
         </MiniPlayerContainer>
+        
     );
 }
-
-
-
 
 const MiniPlayerContainer = styled(LinearGradient)`
     position: absolute;

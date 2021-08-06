@@ -8,16 +8,16 @@ import NeonIcon from "./NeonIcon";
 
 import Foundation from "react-native-vector-icons/Foundation";
 import { StyleSheet } from "react-native";
-import Animated, { interpolate, useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 
 const ICON_SIZE = 28;
 
 const MainTabs = createBottomTabNavigator();
 
 export default (props : any) => {
+
     return (
         <MainTabs.Navigator
-        
+
             tabBar={(tabsProps) => (
                 <>
                     <MiniPlayer
